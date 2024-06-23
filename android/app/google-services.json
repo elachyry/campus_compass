@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "759790689910",
+    "project_id": "campus-compass-20d32",
+    "storage_bucket": "campus-compass-20d32.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759790689910:android:aa8b0cee00a374d3a0c957",
+        "android_client_info": {
+          "package_name": "com.example.compus_map"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJ4T_OSnGZU4rhgiVjbAtqRwrHUGZZsik"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,61 @@
+name: compus_map
+description: A new Flutter project.
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=2.19.6 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  get: ^4.6.5
+  shared_preferences: ^2.1.2
+  get_storage: ^2.1.1
+  icons_plus: ^4.0.0
+  smooth_page_indicator: ^1.1.0
+  animate_do: ^3.0.2
+  google_fonts: ^4.0.4
+  situm_flutter: ^3.13.0
+  permission_handler: ^11.0.1
+  flutter_inappwebview: ^6.0.0
+  dot_navigation_bar: ^1.0.2
+  firebase_core: ^2.24.2
+  
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/images/logo/
+    - assets/images/cover/
+    - assets/images/onboarding/
+    - assets/images/flags/
+    - assets/languages/
+    - assets/html/mappedin.html
+  
+  fonts:
+    - family: ElMessiri
+      fonts:
+        - asset: assets/fonts/ElMessiri-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/ElMessiri-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/ElMessiri-Bold.ttf
+          weight: 700
+    - family: Signika
+      fonts:
+        - asset: assets/fonts/Signika-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Signika-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Signika-Bold.ttf
+          weight: 700
+    
