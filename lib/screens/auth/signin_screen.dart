@@ -1,7 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+import '../../controllers/controllers.dart';
 import '../../utils/utils.dart';
 import '../screens.dart';
 
@@ -16,134 +18,154 @@ class _SignInScreenState extends State<SignInScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final AuthController authController = Get.find();
+  final screenWidth = Get.width;
   bool isRemember = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.kWhite,
       body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.all(20),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                const SizedBox(height: 30),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.15,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage(ImageConstants.cover),
-                        fit: BoxFit.fill),
+        child: Obx(
+          () {
+            if (AuthController.instance.isLoading.value) {
+              return Expanded(
+                child: Center(
+                  child: LoadingAnimationWidget.staggeredDotsWave(
+                    color: Theme.of(context).primaryColor,
+                    size: screenWidth >= 600 ? 90 : 60,
                   ),
                 ),
-                const SizedBox(height: 30),
-                const Text('Let’s Sign you in',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black)),
-                const SizedBox(height: 5),
-                const Text(
-                  'Please enter your email & password to sign in',
-                  style: TextStyle(fontSize: 14, color: AppColors.kGrey60),
-                ),
-                const SizedBox(height: 30),
-                // Email Field.
-                AuthField(
-                  title: 'Email Address',
-                  hintText: 'Enter your email address',
-                  controller: _emailController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Email is required';
-                    } else if (!value.contains('@') || !value.contains('.')) {
-                      return 'Invalid email address';
-                    }
-                    return null;
-                  },
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                ),
-                const SizedBox(height: 20),
-                // Password Field.
-                AuthField(
-                  title: 'Password',
-                  hintText: 'Enter your password',
-                  controller: _passwordController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Password is required';
-                    } else if (value.length < 8) {
-                      return 'Password should be at least 8 characters long';
-                    }
-                    return null;
-                  },
-                  isPassword: true,
-                  keyboardType: TextInputType.visiblePassword,
-                  textInputAction: TextInputAction.done,
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    RememberMeCard(
-                      onChanged: (value) {
-                        setState(() {
-                          isRemember = value;
-                        });
-                      },
-                    ),
-                    const Spacer(),
-                    CustomTextButton(
-                      onPressed: () {},
-                      text: 'Forget Password',
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 30),
-                Column(
-                  children: [
-                    PrimaryButton(
-                      onTap: () {
-                        if (_formKey.currentState!.validate()) {
-                          Get.toNamed(Routes.bottomNav);
-                        }
-                      },
-                      text: 'Sign In',
-                    ),
-                    const SizedBox(height: 20),
-                    RichText(
-                      text: TextSpan(
-                        text: 'Don’t have an account? ',
-                        style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.kGrey70),
+              );
+            } else {
+              return SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.all(20),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 30),
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.15,
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage(ImageConstants.cover),
+                              fit: BoxFit.fill),
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      const Text('Let’s Sign you in',
+                          style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black)),
+                      const SizedBox(height: 5),
+                      const Text(
+                        'Please enter your email & password to sign in',
+                        style:
+                            TextStyle(fontSize: 14, color: AppColors.kGrey60),
+                      ),
+                      const SizedBox(height: 30),
+                      // Email Field.
+                      AuthField(
+                        title: 'Email Address',
+                        hintText: 'Enter your email address',
+                        controller: _emailController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Email is required';
+                          } else if (!value.contains('@') ||
+                              !value.contains('.')) {
+                            return 'Invalid email address';
+                          }
+                          return null;
+                        },
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      const SizedBox(height: 20),
+                      // Password Field.
+                      AuthField(
+                        title: 'Password',
+                        hintText: 'Enter your password',
+                        controller: _passwordController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Password is required';
+                          } else if (value.length < 8) {
+                            return 'Password should be at least 8 characters long';
+                          }
+                          return null;
+                        },
+                        isPassword: true,
+                        keyboardType: TextInputType.visiblePassword,
+                        textInputAction: TextInputAction.done,
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
                         children: [
-                          TextSpan(
-                            text: 'Sign Up',
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                Get.toNamed(Routes.interestsSelection);
-                              },
-                            style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.kPrimary),
+                          RememberMeCard(
+                            onChanged: (value) {
+                              setState(() {
+                                isRemember = value;
+                              });
+                            },
+                          ),
+                          const Spacer(),
+                          CustomTextButton(
+                            onPressed: () {},
+                            text: 'Forget Password',
                           ),
                         ],
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 20),
-                    const AgreeTermsTextCard(),
-                  ],
+                      const SizedBox(height: 30),
+                      Column(
+                        children: [
+                          PrimaryButton(
+                            onTap: () {
+                              if (_formKey.currentState!.validate()) {
+                                authController.login(_emailController.text,
+                                    _passwordController.text);
+                              }
+                            },
+                            text: 'Sign In',
+                          ),
+                          const SizedBox(height: 20),
+                          RichText(
+                            text: TextSpan(
+                              text: 'Don’t have an account? ',
+                              style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.kGrey70),
+                              children: [
+                                TextSpan(
+                                  text: 'Sign Up',
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      Get.toNamed(Routes.interestsSelection);
+                                    },
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.kPrimary),
+                                ),
+                              ],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 20),
+                          const AgreeTermsTextCard(),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ],
-            ),
-          ),
+              );
+            }
+          },
         ),
       ),
     );

@@ -11,7 +11,7 @@ class ThemeManager extends GetxController {
       primaryColor: const Color(0xFFea3b15),
       fontFamily: controller.selectedIndex == 1 ? 'ElMessiri' : 'Signika',
       cardColor: const Color(0xFFFFE6D7),
-      scaffoldBackgroundColor: const Color(0xFFfcfcfe),
+      scaffoldBackgroundColor: const Color(0xFFf8f8f8),
       appBarTheme: const AppBarTheme().copyWith(
         backgroundColor: const Color(0xFFfcfcfe),
       ),

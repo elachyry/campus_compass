@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../controllers/controllers.dart';
+
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -7,8 +9,10 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        child:const Center(
-          child: Text("Profile"),
+        child: Center(
+          child: ElevatedButton(onPressed: () {
+            AuthController.instance.signOut();
+          }, child: const Text("Sign Out")),
         ),
       ),
     );
