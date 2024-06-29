@@ -1,10 +1,9 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../controllers/controllers.dart';
-import '../../models/models.dart';
 import '../../utils/utils.dart';
 import '../screens.dart';
 
@@ -49,127 +48,118 @@ class _SignUpScreenState extends State<SignUpScreen> {
             } else {
               return SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
                 child: Form(
                   key: _formKey,
                   child: Column(
                     children: [
                       Container(
-                        height: MediaQuery.of(context).size.height * 0.15,
-                        width: double.infinity,
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage(ImageConstants.cover),
-                              fit: BoxFit.fill),
+                        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.r),
+                          color: Theme.of(context).colorScheme.background,
                         ),
-                      ),
-                      const SizedBox(height: 30),
-                      const Text('Create Account',
-                          style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black)),
-                      const SizedBox(height: 5),
-                      const Text(
-                          'Please enter your email & password to create an account',
-                          style: TextStyle(
-                              fontSize: 14, color: AppColors.kGrey60)),
-                      const SizedBox(height: 30),
-                      // FullName.
-                      AuthField(
-                        title: 'Full Name',
-                        hintText: 'Enter your name',
-                        controller: _nameController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Name is required';
-                          } else if (!RegExp(r'^[a-zA-Z ]+ $')
-                              .hasMatch(value)) {
-                            return 'Please enter a valid name';
-                          }
-                          return null;
-                        },
-                        keyboardType: TextInputType.name,
-                        textInputAction: TextInputAction.next,
-                      ),
-                      const SizedBox(height: 15),
-                      // Email Field.
-                      AuthField(
-                        title: 'E-mail',
-                        hintText: 'Enter your email address',
-                        controller: _emailController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Email is required';
-                          } else if (!value.contains('@') ||
-                              !value.contains('.')) {
-                            return 'Invalid email address';
-                          }
-                          return null;
-                        },
-                        keyboardType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
-                      ),
-                      const SizedBox(height: 15),
-                      // Password Field.
-                      AuthField(
-                        title: 'Password',
-                        hintText: 'Enter your password',
-                        controller: _passwordController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Password is required';
-                          } else if (value.length < 8) {
-                            return 'Password should be at least 8 characters long';
-                          }
-                          return null;
-                        },
-                        isPassword: true,
-                        keyboardType: TextInputType.visiblePassword,
-                        textInputAction: TextInputAction.done,
-                      ),
-                      const SizedBox(height: 20),
-                      Column(
-                        children: [
-                          PrimaryButton(
-                            onTap: () {
-                              if (_formKey.currentState!.validate()) {
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              backgroundImage: const AssetImage(
+                                "assets/images/logo/fav.png",
+                              ),
+                              radius: 50.r,
+                              backgroundColor: Colors.white,
+                            ),
+                            SizedBox(height: 20.h),
+                            Text(
+                              "Let's create your account!",
+                              style: Theme.of(context).textTheme.headlineSmall,
+                            ),
+                            SizedBox(height: 20.h),
+                            AuthField(
+                              title: "Full Name",
+                              hintText: "Full Name",
+                              controller: _nameController,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Name is required';
+                                } else if (!RegExp(r'^[a-zA-Z ]+ $')
+                                    .hasMatch(value)) {
+                                  return 'Please enter a valid name';
+                                }
+                                return null;
+                              },
+                              keyboardType: TextInputType.name,
+                              textInputAction: TextInputAction.next,
+                            ),
+                            SizedBox(height: 20.h),
+                            AuthField(
+                              title: "Email",
+                              hintText: "Email",
+                              controller: _emailController,
+                              maxLines: 1,
+                              keyboardType: TextInputType.emailAddress,
+                              textInputAction: TextInputAction.next,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Email is required';
+                                } else if (!value.contains('@') ||
+                                    !value.contains('.')) {
+                                  return 'Invalid email address';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 20.h),
+                            AuthField(
+                              title: "Password",
+                              hintText: "Password",
+                              controller: _passwordController,
+                              isPassword: true,
+                              textInputAction: TextInputAction.done,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Password is required';
+                                } else if (value.length < 8) {
+                                  return 'Password should be at least 8 characters long';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 20.h),
+                            PrimaryButton(
+                              onTap: () {
+                                if (_formKey.currentState!.validate()) {
                                 authController.register(
                                     _nameController.text,
                                     _emailController.text,
                                     _passwordController.text);
                               }
-                            },
-                            text: 'Create An Account',
-                          ),
-                          const SizedBox(height: 20),
-                          RichText(
-                            text: TextSpan(
-                              text: 'Already have an account? ',
-                              style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.kGrey70),
-                              children: [
-                                TextSpan(
-                                  text: 'Sign In',
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      Get.offAllNamed(Routes.signin);
-                                    },
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700,
-                                      color: AppColors.kPrimary),
-                                ),
-                              ],
+                              },
+                              text: 'Sign up',
                             ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 20),
-                          const AgreeTermsTextCard(),
-                        ],
+                            SizedBox(height: 20.h),
+                            OutlinedButton(
+                              onPressed: () {
+                                Get.toNamed(Routes.signin);
+                              },
+                              style: OutlinedButton.styleFrom(
+                                fixedSize: const Size(double.maxFinite, 53),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.r),
+                                ),
+                                side: BorderSide(
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                              child:  Text(
+                                "Sign in",
+                                 style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                      SizedBox(height: 20.h),
+                          const AgreeTermsTextCard(),
                     ],
                   ),
                 ),

@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -45,7 +46,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     return Column(
                       children: [
                         Container(
-                          margin: const EdgeInsets.fromLTRB(15, 40, 15, 10),
+                          margin:  EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
                           width: Get.width,
                           height: Get.height / 2.5,
                           child: CustomAnimatedWidget(
@@ -54,41 +55,34 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             child: Image.asset(listOfItems[index].img),
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: 20.h),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          padding:  EdgeInsets.symmetric(horizontal: 20.w),
                           child: CustomAnimatedWidget(
                             index: index,
                             delay: 300,
                             child: Text(
                               listOfItems[index].title,
                               textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color:
-                                    Theme.of(context).colorScheme.onBackground,
-                                fontSize: 26,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(fontWeight: FontWeight.w600),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 40),
-                          child: CustomAnimatedWidget(
-                            index: index,
-                            delay: 500,
-                            child: Text(listOfItems[index].subTitle,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground,
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 15,
-                                )
-                                // style: GoogleFonts.poppins(
-                                //     fontSize: 17, fontWeight: FontWeight.w300),
-                                ),
+                        SizedBox(height: 20.h),
+                        Expanded(
+                          child: Padding(
+                            padding:   EdgeInsets.symmetric(horizontal: 30.w),
+                            child: CustomAnimatedWidget(
+                              index: index,
+                              delay: 500,
+                              child: Text(listOfItems[index].subTitle,
+                                  textAlign: TextAlign.center,
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium),
+                            ),
                           ),
                         ),
                       ],
@@ -106,9 +100,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       count: listOfItems.length,
                       effect: ExpandingDotsEffect(
                         spacing: 6.0,
-                        radius: 10.0,
-                        dotWidth: 10.0,
-                        dotHeight: 10.0,
+                        radius: 10.0.r,
+                        dotWidth: 10.0.w,
+                        dotHeight: 10.0.h,
                         expansionFactor: 3.8,
                         dotColor: Colors.grey,
                         activeDotColor: Theme.of(context).primaryColor,
@@ -125,7 +119,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     const Spacer(),
                     currentIndex == 3
                         ? Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            padding:   EdgeInsets.symmetric(horizontal: 24.w),
                             child: Column(
                               children: [
                                 FadeInDown(
@@ -137,23 +131,35 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                                     text: 'Get Started',
                                   ),
                                 ),
-                                const SizedBox(height: 15),
+                                SizedBox(height: 15.h),
                                 FadeInUp(
                                   delay: const Duration(milliseconds: 200),
-                                  child: ElevatedButton(
+                                  child: OutlinedButton(
                                     onPressed: () {
-                                      Get.offNamed(Routes.signin);
+                                      Get.toNamed(Routes.signin);
                                     },
-                                    style: ElevatedButton.styleFrom(
-                                        fixedSize:
-                                            const Size(double.maxFinite, 53),
-                                        backgroundColor: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10))),
-                                    child: const Text(
-                                      'I Already Have An Account',
-                                      style: TextStyle(color: Colors.black),
+                                    style: OutlinedButton.styleFrom(
+                                      fixedSize:
+                                          const Size(double.maxFinite, 53),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20.r),
+                                      ),
+                                      side: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      "I Already have an account",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium!
+                                          .copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onBackground,
+                                          ),
                                     ),
                                   ),
                                 ),
@@ -161,7 +167,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             ),
                           )
                         : Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            padding:   EdgeInsets.symmetric(horizontal: 24.w),
                             child: PrimaryButton(
                               onTap: () {
                                 setState(() {
@@ -174,7 +180,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                               text: 'Next',
                             ),
                           ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                   ],
                 ),
               ),
@@ -209,23 +215,27 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
 class PrimaryButton extends StatelessWidget {
   final String text;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   const PrimaryButton({super.key, required this.text, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: onTap,
-        style: ElevatedButton.styleFrom(
-            fixedSize: const Size(double.maxFinite, 53),
-            backgroundColor: Theme.of(context).primaryColor,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10))),
-        child: Text(
-          text,
-          // style: GoogleFonts.poppins(
-          //     color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
-        ));
+      onPressed: onTap,
+      style: ElevatedButton.styleFrom(
+        fixedSize: const Size(double.maxFinite, 53),
+        backgroundColor: Theme.of(context).primaryColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+      ),
+      child: Text(
+        text,
+        style: Theme.of(context).textTheme.titleMedium!.copyWith(
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
+      ),
+    );
   }
 }
 

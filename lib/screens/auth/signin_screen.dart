@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -24,7 +25,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.kWhite,
+      // backgroundColor: AppColors.kWhite,
       body: SafeArea(
         child: Obx(
           () {
@@ -40,125 +41,98 @@ class _SignInScreenState extends State<SignInScreen> {
             } else {
               return SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.only(
+                    left: 15, right: 15, bottom: 20, top: Get.height * 0.1),
                 child: Form(
                   key: _formKey,
                   child: Column(
                     children: [
-                      const SizedBox(height: 30),
                       Container(
-                        height: MediaQuery.of(context).size.height * 0.15,
-                        width: double.infinity,
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage(ImageConstants.cover),
-                              fit: BoxFit.fill),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 15.w, vertical: 15.h),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.r),
+                          color: Theme.of(context).colorScheme.background,
                         ),
-                      ),
-                      const SizedBox(height: 30),
-                      const Text('Let’s Sign you in',
-                          style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black)),
-                      const SizedBox(height: 5),
-                      const Text(
-                        'Please enter your email & password to sign in',
-                        style:
-                            TextStyle(fontSize: 14, color: AppColors.kGrey60),
-                      ),
-                      const SizedBox(height: 30),
-                      // Email Field.
-                      AuthField(
-                        title: 'Email Address',
-                        hintText: 'Enter your email address',
-                        controller: _emailController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Email is required';
-                          } else if (!value.contains('@') ||
-                              !value.contains('.')) {
-                            return 'Invalid email address';
-                          }
-                          return null;
-                        },
-                        keyboardType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
-                      ),
-                      const SizedBox(height: 20),
-                      // Password Field.
-                      AuthField(
-                        title: 'Password',
-                        hintText: 'Enter your password',
-                        controller: _passwordController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Password is required';
-                          } else if (value.length < 8) {
-                            return 'Password should be at least 8 characters long';
-                          }
-                          return null;
-                        },
-                        isPassword: true,
-                        keyboardType: TextInputType.visiblePassword,
-                        textInputAction: TextInputAction.done,
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          RememberMeCard(
-                            onChanged: (value) {
-                              setState(() {
-                                isRemember = value;
-                              });
-                            },
-                          ),
-                          const Spacer(),
-                          CustomTextButton(
-                            onPressed: () {},
-                            text: 'Forget Password',
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 30),
-                      Column(
-                        children: [
-                          PrimaryButton(
-                            onTap: () {
-                              if (_formKey.currentState!.validate()) {
-                                authController.login(_emailController.text,
-                                    _passwordController.text);
-                              }
-                            },
-                            text: 'Sign In',
-                          ),
-                          const SizedBox(height: 20),
-                          RichText(
-                            text: TextSpan(
-                              text: 'Don’t have an account? ',
-                              style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.kGrey70),
-                              children: [
-                                TextSpan(
-                                  text: 'Sign Up',
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      Get.toNamed(Routes.interestsSelection);
-                                    },
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700,
-                                      color: AppColors.kPrimary),
-                                ),
-                              ],
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              backgroundImage: const AssetImage(
+                                "assets/images/logo/fav.png",
+                              ),
+                              radius: 50.r,
+                              backgroundColor: Colors.white,
                             ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 20),
-                          const AgreeTermsTextCard(),
-                        ],
+                            SizedBox(height: 20.h),
+                            Text(
+                              "Let's Sign you in",
+                              style: Theme.of(context).textTheme.headlineSmall,
+                            ),
+                            SizedBox(height: 20.h),
+                            AuthField(
+                              title: "Email",
+                              hintText: "Email",
+                              controller: _emailController,
+                              maxLines: 1,
+                              keyboardType: TextInputType.emailAddress,
+                              textInputAction: TextInputAction.next,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Email is required';
+                                } else if (!value.contains('@') ||
+                                    !value.contains('.')) {
+                                  return 'Invalid email address';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 20.h),
+                            AuthField(
+                              title: "Password",
+                              hintText: "Password",
+                              controller: _passwordController,
+                              isPassword: true,
+                              textInputAction: TextInputAction.done,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Password is required';
+                                } else if (value.length < 8) {
+                                  return 'Password should be at least 8 characters long';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 20.h),
+                            PrimaryButton(
+                              onTap: () {
+                                if (_formKey.currentState!.validate()) {
+                                  authController.login(_emailController.text,
+                                      _passwordController.text);
+                                }
+                              },
+                              text: 'Sign In',
+                            ),
+                            SizedBox(height: 20.h),
+                            OutlinedButton(
+                              onPressed: () {
+                                Get.toNamed(Routes.signup);
+                              },
+                              style: OutlinedButton.styleFrom(
+                                fixedSize: const Size(double.maxFinite, 53),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.r),
+                                ),
+                                side: BorderSide(
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                              child: Text(
+                                "Sign up",
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -178,105 +152,38 @@ class AgreeTermsTextCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40),
+      padding: EdgeInsets.symmetric(horizontal: 40.w),
       child: RichText(
         text: TextSpan(
           text: 'By signing up you agree to our ',
-          style: const TextStyle(
-              fontSize: 14,
+          style: TextStyle(
+              fontSize: 14.sp,
               fontWeight: FontWeight.w400,
               color: AppColors.kGrey70),
           children: [
             TextSpan(
                 text: 'Terms',
                 recognizer: TapGestureRecognizer()..onTap = () {},
-                style: const TextStyle(
-                    fontSize: 14,
+                style: TextStyle(
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
                     color: AppColors.kGrey100)),
-            const TextSpan(
+            TextSpan(
                 text: ' and ',
                 style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
                     color: AppColors.kGrey70)),
             TextSpan(
                 text: 'Conditions of Use',
                 recognizer: TapGestureRecognizer()..onTap = () {},
-                style: const TextStyle(
-                    fontSize: 14,
+                style: TextStyle(
+                    fontSize: 14.sp,
                     fontWeight: FontWeight.w400,
                     color: AppColors.kGrey100)),
           ],
         ),
         textAlign: TextAlign.center,
-      ),
-    );
-  }
-}
-
-class CustomSocialButton extends StatefulWidget {
-  final String icon;
-  final VoidCallback onTap;
-  const CustomSocialButton({
-    required this.icon,
-    required this.onTap,
-    super.key,
-  });
-
-  @override
-  State<CustomSocialButton> createState() => _CustomSocialButtonState();
-}
-
-class _CustomSocialButtonState extends State<CustomSocialButton>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  final Duration _animationDuration = const Duration(milliseconds: 300);
-  final Tween<double> _tween = Tween<double>(begin: 1.0, end: 0.95);
-  @override
-  void initState() {
-    _controller = AnimationController(
-      vsync: this,
-      duration: _animationDuration,
-    )..addListener(() {
-        setState(() {});
-      });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        _controller.forward().then((_) {
-          _controller.reverse();
-        });
-        widget.onTap();
-      },
-      child: ScaleTransition(
-        scale: _tween.animate(
-          CurvedAnimation(
-            parent: _controller,
-            curve: Curves.easeOut,
-            reverseCurve: Curves.easeIn,
-          ),
-        ),
-        child: Container(
-          height: 48,
-          width: 72,
-          padding: const EdgeInsets.all(1),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            color: const Color(0xFFF6F6F6),
-            image: DecorationImage(image: AssetImage(widget.icon)),
-          ),
-        ),
       ),
     );
   }
@@ -303,7 +210,7 @@ class CustomTextButton extends StatelessWidget {
         text,
         style: TextStyle(
           color: color ?? Colors.red,
-          fontSize: fontSize ?? 14,
+          fontSize: fontSize ?? 14.sp,
         ),
       ),
     );
@@ -332,15 +239,15 @@ class _RememberMeCardState extends State<RememberMeCard> {
             widget.onChanged(_isChecked);
           },
           child: Container(
-            width: 24,
-            height: 24,
+            width: 24.w,
+            height: 24.h,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
                 color: _isChecked
                     ? const Color(0xFFD1A661)
                     : const Color(0xFFE3E9ED),
-                width: 2,
+                width: 2.w,
               ),
             ),
             child: _isChecked
@@ -352,10 +259,10 @@ class _RememberMeCardState extends State<RememberMeCard> {
                 : null,
           ),
         ),
-        const SizedBox(width: 8),
-        const Text(
+        SizedBox(width: 8.w),
+        Text(
           'Remember me',
-          style: TextStyle(fontSize: 14, color: Color(0xFF78828A)),
+          style: TextStyle(fontSize: 14.sp, color: const Color(0xFF78828A)),
         ),
       ],
     );
@@ -396,26 +303,38 @@ class _AuthFieldState extends State<AuthField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.title,
-          style: TextStyle(
-              fontSize: 14,
-              color: widget.titleColor ?? const Color(0xFF78828A)),
-        ),
+        // Text(
+        //   widget.title,
+        //   style: TextStyle(
+        //       fontSize: 14,
+        //       color: widget.titleColor ?? const Color(0xFF78828A)),
+        // ),
         const SizedBox(height: 5),
         TextFormField(
           controller: widget.controller,
           validator: widget.validator,
           maxLines: widget.isPassword ? 1 : widget.maxLines,
           // ignore: avoid_bool_literals_in_conditional_expressions
+
           obscureText: widget.isPassword ? isObscure : false,
           textInputAction: widget.textInputAction,
           keyboardType: widget.keyboardType,
           decoration: InputDecoration(
-            fillColor: const Color(0xFFF6F6F6),
             filled: true,
-            hintText: widget.hintText,
-            hintStyle: const TextStyle(color: AppColors.kGrey60),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5.r),
+              borderSide: const BorderSide(
+                style: BorderStyle.none,
+              ),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5.r),
+              borderSide: const BorderSide(
+                style: BorderStyle.none,
+              ),
+            ),
+            labelText: widget.title,
+            floatingLabelBehavior: FloatingLabelBehavior.auto,
             suffixIcon: widget.isPassword
                 ? IconButton(
                     onPressed: () {

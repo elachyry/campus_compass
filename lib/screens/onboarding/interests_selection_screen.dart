@@ -1,4 +1,8 @@
+import 'package:compus_map/screens/onboarding/onboarding_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../../models/models.dart';
@@ -13,8 +17,6 @@ class InterestsSelectionScreen extends StatefulWidget {
 }
 
 class _InterestsSelectionScreenState extends State<InterestsSelectionScreen> {
-  List<bool> isChecked =
-      List<bool>.filled(Interest.interestsList.length, false);
   bool isSelect = false;
   @override
   Widget build(BuildContext context) {
@@ -33,54 +35,72 @@ class _InterestsSelectionScreenState extends State<InterestsSelectionScreen> {
       ),
       body: SafeArea(
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          padding:  EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
           child: Column(
             children: [
               Text(
                 'Select your interests to get personalized event suggestions',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onBackground,
-                  fontSize: 26,
-                ),
+                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                  fontWeight: FontWeight.bold,
+                )
               ),
               const Spacer(
                 flex: 1,
               ),
               Expanded(
                 flex: 12,
-                child: ListView.builder(
-                  itemCount: Interest.interestsList.length,
-                  itemBuilder: (context, index) => CheckboxListTile(
-                    title: Text(Interest.interestsList[index].name),
-                    value: isChecked.elementAt(index),
-                    onChanged: (bool? value) {
+                child: SingleChildScrollView(
+                  child: MultiSelectContainer(
+                    items: Interest.interestsList.map((e) {
+                      return MultiSelectCard(
+                        value: e.name,
+                        child: Padding(
+                          padding:  EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                          child: FittedBox(
+                            child: Text(e.name),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    onChange: (allSelectedItems, selectedItem) {
                       setState(() {
-                        isChecked[index] = value!;
-                        for (int i = 0; i < isChecked.length; i++) {
-                          if (isChecked[i]) {
-                            isSelect = true;
-                            break;
-                          } else {
-                            isSelect = false;
-                          }
+                        if (allSelectedItems.isNotEmpty) {
+                          isSelect = true;
+                        } else {
+                          isSelect = false;
                         }
                       });
                     },
-                    activeColor: Theme.of(context).colorScheme.primary,
+                    textStyles: MultiSelectTextStyles(
+                      textStyle: Theme.of(context).textTheme.titleSmall,
+                      selectedTextStyle: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    itemsDecoration: MultiSelectDecorations(
+                      selectedDecoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.secondary,
+                        borderRadius: BorderRadius.circular(20.r),
+                      ),
+                    ),
+                    maxSelectableCount: 5,
+                    onMaximumSelected: (allSelectedItems, selectedItem) {
+                      Fluttertoast.showToast(
+                        msg: "The limit has been reached".tr,
+                      );
+                    },
                   ),
                 ),
               ),
               const Spacer(
                 flex: 1,
               ),
-              ElevatedButton(
-                onPressed: !isSelect
+              PrimaryButton(
+                onTap: !isSelect
                     ? null
                     : () {
                         Get.toNamed(Routes.signup);
                       },
-                child: const Text('Save'),
+                text: 'Save',
               ),
             ],
           ),

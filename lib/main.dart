@@ -1,6 +1,7 @@
 import 'package:compus_map/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -30,24 +31,33 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final levelSelectionController = Get.put(LevelSelectionController());
-    return GetBuilder<LocalizationController>(builder: (controller) {
-      return GetMaterialApp(
-        title: 'Campus Compass',
-        theme: ThemeManager(controller).lightTheme,
-        darkTheme: ThemeManager(controller).darkTheme,
-        themeMode: ThemeManager(controller).getThmeMode(),
-        defaultTransition: Transition.fadeIn,
-        home: Container(),
-        locale: controller.locale,
-        initialRoute: Routes.language,
-        getPages: Routes.routes,
-        fallbackLocale: Locale(Language.languages[0].languageCode,
-            Language.languages[0].countryCode),
-        translations: Messages(languages: languages),
-        initialBinding: BindingsBuilder(() {
-        Get.put(AuthController());
-      }),
-      );
-    });
+    return GetBuilder<LocalizationController>(
+      builder: (controller) {
+        return ScreenUtilInit(
+          builder: (_, child) {
+            return GetMaterialApp(
+              title: 'Campus Compass',
+              theme: ThemeManager(controller).lightTheme,
+              darkTheme: ThemeManager(controller).darkTheme,
+              themeMode: ThemeManager(controller).getThmeMode(),
+              defaultTransition: Transition.fadeIn,
+              home: Container(),
+              locale: controller.locale,
+              initialRoute: Routes.language,
+              getPages: Routes.routes,
+              fallbackLocale: Locale(Language.languages[0].languageCode,
+                  Language.languages[0].countryCode),
+              translations: Messages(languages: languages),
+              initialBinding: BindingsBuilder(
+                () {
+                  Get.put(AuthController());
+                },
+              ),
+            );
+          },
+          designSize: const Size(411, 813),
+        );
+      },
+    );
   }
 }

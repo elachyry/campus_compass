@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ThemeManager extends GetxController {
   final controller;
@@ -8,17 +10,17 @@ class ThemeManager extends GetxController {
   ThemeManager(this.controller) {
     lightTheme = ThemeData(
       brightness: Brightness.light,
-      primaryColor: const Color(0xFFea3b15),
+      primaryColor: const Color(0xFF184C92),
       fontFamily: controller.selectedIndex == 1 ? 'ElMessiri' : 'Signika',
-      cardColor: const Color(0xFFFFE6D7),
+      cardColor: const Color(0xFFf8f8f8),
       scaffoldBackgroundColor: const Color(0xFFf8f8f8),
       appBarTheme: const AppBarTheme().copyWith(
         backgroundColor: const Color(0xFFfcfcfe),
       ),
       colorScheme: const ColorScheme.light().copyWith(
-        primary: const Color(0xFFea3b15),
-        secondary: const Color(0xFFFF9800),
-        background: const Color(0xFFFFE6D7),
+        primary: const Color(0xFF184C92),
+        secondary: const Color(0xFFD74728),
+        background: Colors.white,
         onBackground: Colors.black87,
         onSecondary: const Color(0xFFe8eff5),
         onSurface: const Color(0xFF212a2f),
@@ -29,24 +31,17 @@ class ThemeManager extends GetxController {
           elevation: 3,
           minimumSize: const Size(327, 50),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.r),
           ),
-          textStyle: TextStyle(
-            fontSize: 17,
-            fontFamily: controller.selectedIndex == 1 ? 'ElMessiri' : 'Signika',
-          ),
+          textStyle: GoogleFonts.poppins(),
         ),
       ),
-      textTheme: const TextTheme(
-        titleLarge: TextStyle(
-          fontSize: 24,
-        ),
-        titleMedium: TextStyle(
-          fontSize: 18,
-        ),
-        titleSmall: TextStyle(
-          fontSize: 14,
-        ),
+      textTheme: TextTheme(
+        titleLarge: GoogleFonts.poppins(fontSize: 20.sp),
+        titleMedium: GoogleFonts.poppins(fontSize: 16.sp),
+        titleSmall: GoogleFonts.poppins(fontSize: 14.sp),
+        bodyMedium: GoogleFonts.poppins(fontSize: 14.sp),
+        headlineSmall: GoogleFonts.poppins(fontSize: 24.sp),
       ),
     );
 
@@ -72,7 +67,7 @@ class ThemeManager extends GetxController {
           elevation: 3,
           minimumSize: const Size(327, 50),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.r),
           ),
           textStyle: TextStyle(
             fontSize: 17,

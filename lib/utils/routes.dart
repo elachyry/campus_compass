@@ -9,7 +9,7 @@ class Routes {
   static const String signup = '/signup';
   static const String register = '/register';
   static const String profile = '/profile';
-  static const String settings = '/settings';
+  // static const String settings = '/settings';
   static const String map = '/map';
   static const String favorites = '/favorites';
   static const String about = '/about';
@@ -24,8 +24,7 @@ class Routes {
   static List<GetPage> routes = [
     GetPage(
       name: language,
-      page: () => LanguageSelectionScreen(
-        firstTime: true,
+      page: () => const LanguageSelectionScreen(
       ),
     ),
     GetPage(
@@ -51,10 +50,6 @@ class Routes {
     GetPage(
       name: map,
       page: () => const MapScreen(),
-    ),
-    GetPage(
-      name: settings,
-      page: () => const SettingsScreen(),
     ),
     GetPage(
       name: favorites,
