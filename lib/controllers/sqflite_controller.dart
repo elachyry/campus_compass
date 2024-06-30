@@ -39,7 +39,9 @@ class SqfliteController extends GetxController {
       imageUrl TEXT,
       gender TEXT,
       birthDate TEXT,
-      interests TEXT
+      interests TEXT,
+      role TEXT,
+      department TEXT
       )
 ''');
   }
@@ -77,9 +79,9 @@ Future<void> insertUserData(User user) async {
     interestsJson = interestsJson.replaceAll("'", "''");
 
     String query = '''
-      INSERT INTO user ("id", "fullName", "email", "isCompleted", "phoneNumber", "imageUrl", "gender", "birthDate", "interests") 
+      INSERT INTO user ("id", "fullName", "email", "isCompleted", "phoneNumber", "imageUrl", "gender", "birthDate", "interests", "role", "department") 
       VALUES ("${user.id}", "${user.name}", "${user.email}", ${user.isCompleted ? 1 : 0}, 
-              "${user.phoneNumber}", "${user.imageUrl}", "${user.gender}", "${user.birthDate}", '$interestsJson')
+              "${user.phoneNumber}", "${user.imageUrl}", "${user.gender}", "${user.birthDate}", '$interestsJson', "${user.role}", "${user.department}")
     ''';
 
     await insertData(query);
@@ -98,7 +100,9 @@ Future<int> updatetUserData(User user) async {
       imageUrl = "${user.imageUrl}", 
       gender = "${user.gender}", 
       birthDate = "${user.birthDate}", 
-      interests = '$interestsJson' 
+      interests = '$interestsJson',
+      role = "${user.role}",
+      department = "${user.department}"
     WHERE id = "${user.id}"
   ''';
 
@@ -120,11 +124,13 @@ Future<int> updatetUserData(User user) async {
         imageUrl: result.first['imageUrl'],
         gender: result.first['gender'],
         birthDate: result.first['birthDate'],
+        role: result.first['role'],
+        department: result.first['department'],
         interests: List<Interest>.from(
           jsonDecode(result.first['interests']).map(
             (interest) => Interest.fromJson(interest),
           ),
-        )
+        ),
       );
     }
     return null;

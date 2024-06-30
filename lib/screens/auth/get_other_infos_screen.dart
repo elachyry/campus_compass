@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:image_picker/image_picker.dart';
@@ -31,7 +32,40 @@ class _GetOtherInfosScreenState extends State<GetOtherInfosScreen> {
     'Male',
     'Female',
   ];
-  String? selectedValue;
+  final List<String> roleItems = [
+    'Student',
+    'Professor',
+    'Administrator',
+    'Staff',
+  ];
+  final List<String> departmentItems = [
+    'Emines',
+    'SAP&D',
+    'GTI',
+    'College of Computing',
+    'IST&I',
+    'MSN',
+    'ISSBP',
+    'ABS',
+    'Collective Intelligence',
+    'SHBM',
+    '1337',
+    'FGSES',
+    'Faculty of medical sciences',
+    'Center for african studies',
+    'Story school',
+    'AI Movment',
+    'PPS',
+    'AIRESS',
+    'AAIT',
+    'African academy of industrial training',
+    'MAHER',
+    'AGBS',
+  ];
+  String? selectedGender;
+  String? selectedRole;
+  String? selectedDepartment;
+  String? phoneNumber;
   final ImagePicker _picker = ImagePicker();
   XFile? _imageFile;
 
@@ -178,99 +212,124 @@ class _GetOtherInfosScreenState extends State<GetOtherInfosScreen> {
                                 },
                               ),
                               SizedBox(height: 20.h),
-                              AuthField(
-                                title: "Phone number*",
-                                hintText: "Phone number*",
+                              IntlPhoneField(
                                 controller: _phoneController,
-                                maxLines: 1,
-                                keyboardType: TextInputType.phone,
-                                textInputAction: TextInputAction.next,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'phone number is required';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              SizedBox(height: 20.h),
-                              DropdownButtonFormField2<String>(
-                                isExpanded: true,
                                 decoration: InputDecoration(
+                                  labelText: 'Phone Number*',
                                   filled: true,
-                                  contentPadding: EdgeInsets.symmetric(
-                                      vertical: 20.h, horizontal: 0),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5.r),
-                                    borderSide: const BorderSide(
-                                      style: BorderStyle.none,
-                                    ),
-                                  ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(5.r),
                                     borderSide: const BorderSide(
                                       style: BorderStyle.none,
                                     ),
                                   ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5.r),
+                                    borderSide: const BorderSide(
+                                      style: BorderStyle.none,
+                                    ),
+                                  ),
                                 ),
-                                hint: const Text(
-                                  'Select Your Gender*',
-                                ),
-                                items: genderItems
-                                    .map((item) => DropdownMenuItem<String>(
-                                          value: item,
-                                          child: Text(
-                                            item,
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ))
-                                    .toList(),
                                 validator: (value) {
-                                  if (value == null) {
-                                    return 'Please select gender.';
+                                  if (value == null || value.number.isEmpty) {
+                                    return 'phone number is required';
                                   }
                                   return null;
                                 },
-                                onChanged: (value) {
-                                  selectedValue = value.toString();
+                                onChanged: (phone) {
+                                  phoneNumber = phone.completeNumber;
                                 },
-                                buttonStyleData: const ButtonStyleData(
-                                  padding: EdgeInsets.only(right: 8),
-                                ),
-                                iconStyleData: const IconStyleData(
-                                  icon: Icon(
-                                    Icons.arrow_drop_down,
-                                    color: Colors.black45,
+                                initialCountryCode: 'MA',
+                              ),
+                              // AuthField(
+                              //   title: "Phone number*",
+                              //   hintText: "Phone number*",
+                              //   controller: _phoneController,
+                              //   maxLines: 1,
+                              //   keyboardType: TextInputType.phone,
+                              //   textInputAction: TextInputAction.next,
+                              //   validator: (value) {
+                              //     if (value == null || value.isEmpty) {
+                              //       return 'phone number is required';
+                              //     }
+                              //     return null;
+                              //   },
+                              // ),
+                              // SizedBox(height: 20.h),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: dropdownBuilder(
+                                      hinttext: 'Gender*',
+                                      validator: (value) {
+                                        if (value == null) {
+                                          return 'Please select gender.';
+                                        }
+                                        return null;
+                                      },
+                                      items: genderItems,
+                                      onChange: (value) {
+                                        setState(() {
+                                          selectedGender = value;
+                                        });
+                                      },
+                                    ),
                                   ),
-                                  iconSize: 24,
-                                ),
-                                dropdownStyleData: DropdownStyleData(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
+                                  SizedBox(width: 20.w),
+                                  Expanded(
+                                    child: dropdownBuilder(
+                                      hinttext: 'Role',
+                                      validator: null,
+                                      items: roleItems,
+                                      onChange: (value) {
+                                        setState(() {
+                                          selectedRole = value;
+                                        });
+                                      },
+                                    ),
                                   ),
-                                ),
-                                menuItemStyleData: const MenuItemStyleData(
-                                  padding: EdgeInsets.symmetric(horizontal: 16),
-                                ),
+                                ],
                               ),
                               SizedBox(height: 20.h),
+                              dropdownBuilder(
+                                hinttext: 'Department*',
+                                validator: (value) {
+                                  if (value == null) {
+                                    return 'Please select your department.';
+                                  }
+                                  return null;
+                                },
+                                items: departmentItems,
+                                onChange: (value) {
+                                  setState(() {
+                                    selectedDepartment = value;
+                                  });
+                                },
+                              ),
+                              SizedBox(height: 20.h),
+
                               PrimaryButton(
-                                onTap: ()async {
+                                onTap: () async {
                                   if (_formKey.currentState!.validate()) {
-                                    String phoneNumber = _phoneController.text;
                                     String birthDate = _dateController.text;
-                                    String gender = selectedValue ?? '';
-                                    User? user = authController.currentUser.value;
-                                            
-                                    User updatedUser = user!
-                                        .copyWith(
+                                    String gender = selectedGender ?? '';
+                                    String department =
+                                        selectedDepartment ?? '';
+                                    String role = selectedRole ?? '';
+                                    User? user =
+                                        authController.currentUser.value;
+
+                                    
+
+                                    User updatedUser = user!.copyWith(
                                       phoneNumber: phoneNumber,
                                       imageUrl: _imageFile?.path ??
                                           authController
                                               .currentUser.value!.imageUrl,
                                       gender: gender,
                                       birthDate: birthDate,
+                                      department: department,
+                                      role: role,
                                       isCompleted: true,
                                     );
                                     authController
@@ -295,6 +354,67 @@ class _GetOtherInfosScreenState extends State<GetOtherInfosScreen> {
             }
           },
         ),
+      ),
+    );
+  }
+
+  DropdownButtonFormField2<String> dropdownBuilder({
+    required String hinttext,
+    required List<String> items,
+    required Function(String?) onChange,
+    required String? Function(String?)? validator,
+  }) {
+    return DropdownButtonFormField2<String>(
+      isExpanded: true,
+      decoration: InputDecoration(
+        filled: true,
+        contentPadding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 0),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5.r),
+          borderSide: const BorderSide(
+            style: BorderStyle.none,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5.r),
+          borderSide: const BorderSide(
+            style: BorderStyle.none,
+          ),
+        ),
+      ),
+      hint: Text(
+        hinttext,
+      ),
+      items: items
+          .map((item) => DropdownMenuItem<String>(
+                value: item,
+                child: Text(
+                  item,
+                  style: const TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+              ))
+          .toList(),
+      onChanged: onChange,
+      validator: validator ?? (value) => null,
+      buttonStyleData: const ButtonStyleData(
+        padding: EdgeInsets.only(right: 8),
+      ),
+      iconStyleData: const IconStyleData(
+        icon: Icon(
+          Icons.arrow_drop_down,
+          color: Colors.black45,
+        ),
+        iconSize: 24,
+      ),
+      dropdownStyleData: DropdownStyleData(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+        ),
+      ),
+      menuItemStyleData: const MenuItemStyleData(
+        padding: EdgeInsets.symmetric(horizontal: 16),
       ),
     );
   }

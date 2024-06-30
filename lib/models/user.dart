@@ -10,6 +10,8 @@ class User {
   String imageUrl;
   String gender;
   String birthDate;
+  String role;
+  String department;
 
 
   User({
@@ -22,6 +24,8 @@ class User {
     this.imageUrl = "",
     this.gender = "",
     this.birthDate = "",
+    this.role = "",
+    this.department = "",
   });
 
   copyWith({
@@ -33,6 +37,8 @@ class User {
     String? imageUrl,
     String? gender,
     String? birthDate,
+     String? role,
+    String? department,
     List<Interest>? interests,
   }) {
     return User(
@@ -45,6 +51,8 @@ class User {
       imageUrl: imageUrl ?? this.imageUrl,
       gender: gender ?? this.gender,
       birthDate: birthDate ?? this.birthDate,
+      role: role ?? this.role,
+      department: department ?? this.department,
     );
   }
 
@@ -59,6 +67,8 @@ class User {
       'imageUrl': imageUrl,
       'gender': gender,
       'birthDate': birthDate,
+      'role': role,
+      'department': department,
     };
   }
 factory User.fromJson(Map<String, dynamic> json) {
@@ -76,6 +86,8 @@ factory User.fromJson(Map<String, dynamic> json) {
       imageUrl: json['imageUrl'],
       gender: json['gender'],
       birthDate: json['birthDate'],
+      role: json['role'],
+      department: json['department'],
     );
   }
 }

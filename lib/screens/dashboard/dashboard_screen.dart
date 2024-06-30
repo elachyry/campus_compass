@@ -56,8 +56,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         },
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(50.r),
-                          child: Image.file(
-                            File(user!.imageUrl),
+                          child: Image.network(
+                            user!.imageUrl,
                             width: 50.w,
                             height: 50.h,
                             fit: BoxFit.cover,

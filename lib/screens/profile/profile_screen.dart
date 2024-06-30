@@ -16,8 +16,7 @@ class ProfileScreen extends StatelessWidget {
     final AuthController authController = Get.find();
     return Scaffold(
       body: SafeArea(
-        child: Obx( ()
-          {
+        child: Obx(() {
           if (authController.currentUser.value == null) {
             return Center(
               child: LoadingAnimationWidget.staggeredDotsWave(
@@ -64,11 +63,12 @@ class ProfileScreen extends StatelessWidget {
                             radius: 50,
                             backgroundColor: Colors.white,
                             child: Stack(
-                              children:  [
+                              children: [
                                 CircleAvatar(
                                   radius: 48.r,
-                                  backgroundImage:  FileImage(
-                                     File( user.imageUrl)),
+                                  backgroundImage: NetworkImage(
+                                    user.imageUrl,
+                                  ),
                                 ),
                                 const Positioned(
                                   bottom: 5,
@@ -238,7 +238,7 @@ class ProfileScreen extends StatelessWidget {
                 )
               ],
             );
-          } 
+          }
         }),
       ),
     );

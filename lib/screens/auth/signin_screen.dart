@@ -30,12 +30,10 @@ class _SignInScreenState extends State<SignInScreen> {
         child: Obx(
           () {
             if (AuthController.instance.isLoading.value) {
-              return Expanded(
-                child: Center(
-                  child: LoadingAnimationWidget.staggeredDotsWave(
-                    color: Theme.of(context).primaryColor,
-                    size: 60.r,
-                  ),
+              return Center(
+                child: LoadingAnimationWidget.staggeredDotsWave(
+                  color: Theme.of(context).primaryColor,
+                  size: 60.r,
                 ),
               );
             } else {

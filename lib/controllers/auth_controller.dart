@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:compus_map/controllers/sqflite_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../exceptions/signin_with_email_and_password_exception.dart';
 import '../exceptions/signup_with_email_and_password_exception.dart';
@@ -15,6 +19,7 @@ class AuthController extends GetxController {
   static AuthController instance = Get.find();
   FirebaseAuth auth = FirebaseAuth.instance;
   final firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
   final SqfliteController sqfliteController = Get.put(SqfliteController());
 
   Rx<User?> firebaseUser = Rx<User?>(null);
@@ -47,11 +52,11 @@ class AuthController extends GetxController {
     currentUser.value = await sqfliteController.getUserData(uid);
     // print("currentUser data: ${currentUser.value!.toJson()}");
     // if (currentUser.value == null) {
-      // Fetch from Firestore if not found in local database
-      currentUser.value = await getUserData(uid);
-      // if (currentUser.value != null) {
-      //   await sqfliteController.insertUserData(currentUser.value!);
-      // }
+    // Fetch from Firestore if not found in local database
+    currentUser.value = await getUserData(uid);
+    // if (currentUser.value != null) {
+    //   await sqfliteController.insertUserData(currentUser.value!);
+    // }
     // }
   }
 
@@ -62,7 +67,8 @@ class AuthController extends GetxController {
     }
   }
 
-  void register(String name, String email, String password, List<Interest> interests) async {
+  void register(String name, String email, String password,
+      List<Interest> interests) async {
     try {
       isLoading.value = true;
       await auth
@@ -85,7 +91,7 @@ class AuthController extends GetxController {
       showSnackBarError('signup_failed'.tr, exception.toString());
       throw exception;
     } catch (e) {
-      print("error: $e");
+      // print("error: $e");
       User user = auth.currentUser as User;
       await user.delete();
       isLoading.value = false;
@@ -99,10 +105,13 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
       await auth.signInWithEmailAndPassword(email: email, password: password);
-      User? user = auth.currentUser;
-      if (user != null) {
-        currentUser.value = await getUserData(user.uid);
-        await sqfliteController.insertUserData(currentUser.value!);
+      User? fuser = auth.currentUser;
+      if (fuser != null) {
+        currentUser.value = await getUserData(fuser.uid);
+        user.User? usercheck = await sqfliteController.getUserData(fuser.uid);
+        if (usercheck == null && currentUser.value != null) {
+          await sqfliteController.insertUserData(currentUser.value!);
+        }
       }
       isLoading.value = false;
     } on FirebaseAuthException catch (error) {
@@ -123,8 +132,21 @@ class AuthController extends GetxController {
     await auth.signOut();
   }
 
+  Future<String?> _uploadImage(String image) async {
+    try {
+      Reference ref =
+          _storage.ref().child('user_images/${currentUser.value!.id}');
+      UploadTask uploadTask = ref.putFile(File(image));
+      TaskSnapshot taskSnapshot = await uploadTask;
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      print('Error uploading image: $e');
+      return null;
+    }
+  }
+
   Future<void> createUser(user.User user) async {
-    print("user55555: ${user.toJson()}");
     await firestore
         .collection('users')
         .doc(AuthController.instance.auth.currentUser!.uid)
@@ -144,6 +166,13 @@ class AuthController extends GetxController {
   Future<void> updateUserData(user.User updatedUser) async {
     try {
       isLoading.value = true;
+
+      if (updatedUser.imageUrl.isNotEmpty) {
+        String? downloadUrl = await _uploadImage(updatedUser.imageUrl);
+        if (downloadUrl != null) {
+          updatedUser.imageUrl = downloadUrl;
+        }
+      }
       await firestore
           .collection('users')
           .doc(auth.currentUser!.uid)
@@ -174,8 +203,7 @@ class AuthController extends GetxController {
         return user.User.fromJson(doc.data() as Map<String, dynamic>);
       }
     } catch (e) {
-      showSnackBarError(
-          'error'.tr, e.toString());
+      showSnackBarError('error'.tr, e.toString());
       rethrow;
     }
     return null;
