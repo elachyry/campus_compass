@@ -18,6 +18,7 @@ class InterestsSelectionScreen extends StatefulWidget {
 
 class _InterestsSelectionScreenState extends State<InterestsSelectionScreen> {
   bool isSelect = false;
+  List<String> selectedInterests = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,6 +66,7 @@ class _InterestsSelectionScreenState extends State<InterestsSelectionScreen> {
                     }).toList(),
                     onChange: (allSelectedItems, selectedItem) {
                       setState(() {
+                        selectedInterests = allSelectedItems;
                         if (allSelectedItems.isNotEmpty) {
                           isSelect = true;
                         } else {
@@ -98,7 +100,9 @@ class _InterestsSelectionScreenState extends State<InterestsSelectionScreen> {
                 onTap: !isSelect
                     ? null
                     : () {
-                        Get.toNamed(Routes.signup);
+                        Get.toNamed(Routes.signup, arguments: {
+                          'interests': selectedInterests,
+                        });
                       },
                 text: 'Save',
               ),

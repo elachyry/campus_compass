@@ -34,7 +34,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 child: Center(
                   child: LoadingAnimationWidget.staggeredDotsWave(
                     color: Theme.of(context).primaryColor,
-                    size: screenWidth >= 600 ? 90 : 60,
+                    size: 60.r,
                   ),
                 ),
               );
@@ -64,11 +64,14 @@ class _SignInScreenState extends State<SignInScreen> {
                               backgroundColor: Colors.white,
                             ),
                             SizedBox(height: 20.h),
-                            Text(
-                              "Let's Sign you in",
-                              style: Theme.of(context).textTheme.headlineSmall,
+                            FittedBox(
+                              child: Text(
+                                "Let's Sign you in",
+                                style: Theme.of(context).textTheme.headlineSmall,
+                                textAlign: TextAlign.center,
+                              ),
                             ),
-                            SizedBox(height: 20.h),
+                            SizedBox(height: 25.h),
                             AuthField(
                               title: "Email",
                               hintText: "Email",
@@ -300,56 +303,43 @@ class _AuthFieldState extends State<AuthField> {
   bool isObscure = true;
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Text(
-        //   widget.title,
-        //   style: TextStyle(
-        //       fontSize: 14,
-        //       color: widget.titleColor ?? const Color(0xFF78828A)),
-        // ),
-        const SizedBox(height: 5),
-        TextFormField(
-          controller: widget.controller,
-          validator: widget.validator,
-          maxLines: widget.isPassword ? 1 : widget.maxLines,
-          // ignore: avoid_bool_literals_in_conditional_expressions
+    return TextFormField(
+      controller: widget.controller,
+      validator: widget.validator,
+      maxLines: widget.isPassword ? 1 : widget.maxLines,
 
-          obscureText: widget.isPassword ? isObscure : false,
-          textInputAction: widget.textInputAction,
-          keyboardType: widget.keyboardType,
-          decoration: InputDecoration(
-            filled: true,
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5.r),
-              borderSide: const BorderSide(
-                style: BorderStyle.none,
-              ),
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5.r),
-              borderSide: const BorderSide(
-                style: BorderStyle.none,
-              ),
-            ),
-            labelText: widget.title,
-            floatingLabelBehavior: FloatingLabelBehavior.auto,
-            suffixIcon: widget.isPassword
-                ? IconButton(
-                    onPressed: () {
-                      setState(() {
-                        isObscure = !isObscure;
-                      });
-                    },
-                    icon: Icon(
-                        isObscure ? Icons.visibility : Icons.visibility_off,
-                        color: const Color(0xFF171725)),
-                  )
-                : null,
+      obscureText: widget.isPassword ? isObscure : false,
+      textInputAction: widget.textInputAction,
+      keyboardType: widget.keyboardType,
+      decoration: InputDecoration(
+        filled: true,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5.r),
+          borderSide: const BorderSide(
+            style: BorderStyle.none,
           ),
         ),
-      ],
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5.r),
+          borderSide: const BorderSide(
+            style: BorderStyle.none,
+          ),
+        ),
+        labelText: widget.title,
+        floatingLabelBehavior: FloatingLabelBehavior.auto,
+        suffixIcon: widget.isPassword
+            ? IconButton(
+                onPressed: () {
+                  setState(() {
+                    isObscure = !isObscure;
+                  });
+                },
+                icon: Icon(
+                    isObscure ? Icons.visibility : Icons.visibility_off,
+                    color: const Color(0xFF171725)),
+              )
+            : null,
+      ),
     );
   }
 }

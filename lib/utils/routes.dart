@@ -1,4 +1,3 @@
-import 'package:compus_map/screens/auth/signin_screen.dart';
 import 'package:get/get.dart';
 
 import '../screens/screens.dart';
@@ -7,6 +6,7 @@ class Routes {
   static const String home = '/';
   static const String signin = '/signin';
   static const String signup = '/signup';
+  static const String otherInfos = '/other-infos';
   static const String register = '/register';
   static const String profile = '/profile';
   // static const String settings = '/settings';
@@ -58,6 +58,10 @@ class Routes {
     GetPage(
       name: profile,
       page: () => const ProfileScreen(),
+    ),
+     GetPage(
+      name: otherInfos,
+      page: () => const GetOtherInfosScreen(),
     ),
   ];
 }

@@ -13,40 +13,41 @@ class BottomNavigationScreen extends StatefulWidget {
 }
 
 class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
-late  PageController pageController;
+  late PageController pageController;
   int _bottomNavIndex = 0;
 
-    List<TabItem> items = const [
-  TabItem(
-    icon: Bootstrap.house_door_fill,
-    title: 'Home',
-  ),
-  TabItem(
-    icon: Icons.favorite_rounded,
-    title: 'Favorites',
-  ),
-  TabItem(
-    icon: Bootstrap.compass_fill,
-    title: 'Map',
-  ),
-  TabItem(
-    icon: Icons.person,
-    title: 'profile',
-  ),
-];
-@override
+  List<TabItem> items = const [
+    TabItem(
+      icon: Bootstrap.house_door_fill,
+      title: 'Home',
+    ),
+    TabItem(
+      icon: Icons.favorite_rounded,
+      title: 'Favorites',
+    ),
+    TabItem(
+      icon: Bootstrap.compass_fill,
+      title: 'Map',
+    ),
+    TabItem(
+      icon: Icons.person,
+      title: 'profile',
+    ),
+  ];
+  @override
   void initState() {
     super.initState();
     pageController = PageController(initialPage: 0);
   }
- @override
+
+  @override
   void dispose() {
     pageController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       backgroundColor: Colors.white,
       body: PageView(
@@ -59,55 +60,20 @@ late  PageController pageController;
           const ProfileScreen(),
         ],
       ),
-      bottomNavigationBar:BottomBarDefault(
-          items: items,
-          backgroundColor: Colors.white,
-          blur: 0,
-          boxShadow: null,
-          color: Colors.black54,
-          colorSelected: Theme.of(context).colorScheme.primary,
-          indexSelected: _bottomNavIndex,
-          borderRadius: BorderRadius.circular(20.r),
-          onTap: (int index) => setState(() {
-            _bottomNavIndex = index;
-            pageController.jumpToPage(index);
-          }),
-          
-        ),      
-      
-      
-      // DotNavigationBar(
-      //   marginR: const EdgeInsets.symmetric(vertical: 3, horizontal: 20),
-      //   paddingR: const EdgeInsets.symmetric(vertical: 10),
-      //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      //   unselectedItemColor: Colors.black54,
-      //   selectedItemColor: Colors.black,
-      //   currentIndex: _bottomNavIndex,
-      //   onTap: (index) {
-      //     setState(() {
-      //       _bottomNavIndex = index;
-      //       pageController.jumpToPage(index);
-      //     });
-      //   },
-      //   // dotIndicatorColor: Colors.black,
-      //   items: [
-      //     DotNavigationBarItem(
-      //       icon: const Icon(Icons.home),
-      //     ),
-
-      //     DotNavigationBarItem(
-      //       icon: const Icon(Icons.favorite_border),
-      //     ),
-
-      //     DotNavigationBarItem(
-      //       icon: const Icon(Icons.map),
-      //     ),
-
-      //     DotNavigationBarItem(
-      //       icon: const Icon(Icons.person),
-      //     ),
-      //   ],
-      // ),
+      bottomNavigationBar: BottomBarDefault(
+        items: items,
+        backgroundColor: Colors.white,
+        blur: 0,
+        boxShadow: null,
+        color: Colors.black54,
+        colorSelected: Theme.of(context).colorScheme.primary,
+        indexSelected: _bottomNavIndex,
+        borderRadius: BorderRadius.circular(20.r),
+        onTap: (int index) => setState(() {
+          _bottomNavIndex = index;
+          pageController.jumpToPage(index);
+        }),
+      ),
     );
   }
 }

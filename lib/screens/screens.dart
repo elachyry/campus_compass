@@ -3,6 +3,7 @@ export 'onboarding/onboarding_screen.dart';
 export 'onboarding/interests_selection_screen.dart';
 export 'auth/signin_screen.dart';
 export 'auth/signup_screen.dart';
+export 'auth/get_other_infos_screen.dart';
 export 'dashboard/bottom_navigation_screen.dart';
 export 'dashboard/dashboard_screen.dart';
 export 'maps/map_screen.dart';

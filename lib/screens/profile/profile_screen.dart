@@ -1,227 +1,245 @@
+import 'dart:io';
+
 import 'package:compus_map/controllers/controllers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+
+import '../../models/models.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final AuthController authController = Get.find();
     return Scaffold(
       body: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-          children: [
-            Container(
-              height: MediaQuery.of(context).size.height / 5,
-              padding: const EdgeInsets.only(bottom: 2),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
-                borderRadius:  BorderRadius.only(
-                    topLeft: Radius.circular(20.r),
-                    topRight: Radius.circular(20.r)),
+        child: Obx( ()
+          {
+          if (authController.currentUser.value == null) {
+            return Center(
+              child: LoadingAnimationWidget.staggeredDotsWave(
+                color: Theme.of(context).primaryColor,
+                size: 60.r,
               ),
-              child: CustomPaint(
-                painter: WavyLinesPainter(),
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.white.withOpacity(0.1),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: CircleAvatar(
-                        radius: 100,
-                        backgroundColor: Colors.white.withOpacity(0.1),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.white,
-                        child: Stack(
-                          children: const [
-                            CircleAvatar(
-                              radius: 48,
-                              backgroundImage:
-                                  AssetImage("assets/images/logo/user.jpeg"),
-                            ),
-                            Positioned(
-                              bottom: 5,
-                              right: 5,
-                              child: CircleAvatar(
-                                radius: 13,
-                                child: Icon(
-                                  Icons.camera_alt_rounded,
-                                  size: 18,
+            );
+          } else {
+            final User? user = authController.currentUser.value;
+            debugPrint("User22222: ${user!.toJson()}");
+            return ListView(
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height / 5,
+                  padding: const EdgeInsets.only(bottom: 2),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20.r),
+                        topRight: Radius.circular(20.r)),
+                  ),
+                  child: CustomPaint(
+                    painter: WavyLinesPainter(),
+                    child: Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: CircleAvatar(
+                            radius: 50,
+                            backgroundColor: Colors.white.withOpacity(0.1),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: CircleAvatar(
+                            radius: 100,
+                            backgroundColor: Colors.white.withOpacity(0.1),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: CircleAvatar(
+                            radius: 50,
+                            backgroundColor: Colors.white,
+                            child: Stack(
+                              children:  [
+                                CircleAvatar(
+                                  radius: 48.r,
+                                  backgroundImage:  FileImage(
+                                     File( user.imageUrl)),
                                 ),
-                              ),
-                            )
-                          ],
+                                const Positioned(
+                                  bottom: 5,
+                                  right: 5,
+                                  child: CircleAvatar(
+                                    radius: 13,
+                                    child: Icon(
+                                      Icons.camera_alt_rounded,
+                                      size: 18,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 7),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.background,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(20.r),
+                      bottomRight: Radius.circular(20.r),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        user.name,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      Text(
+                        user.email,
+                      ),
+                      SizedBox(height: 10.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          outlineButtonBuilder(
+                            context,
+                            title: "Badge",
+                            icon: Icons.qr_code_rounded,
+                          ),
+                          const SizedBox(width: 10),
+                          outlineButtonBuilder(
+                            context,
+                            title: "Edit",
+                            icon: Icons.edit,
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20.w),
+                profileCardItemBuilder(
+                  context,
+                  child: Column(
+                    children: [
+                      profileItemBuilder(
+                        context,
+                        title: "Personal Information",
+                        icon: Icons.person,
+                      ),
+                      profileItemBuilder(
+                        context,
+                        title: "Change Password",
+                        icon: Icons.password,
+                      ),
+                      profileItemBuilder(
+                        context,
+                        title: "Fingerprint Scan",
+                        icon: Icons.fingerprint,
+                        trailing: Switch.adaptive(
+                          value: false,
+                          onChanged: (value) {},
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 7),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.background,
-                borderRadius:  BorderRadius.only(
-                  bottomLeft: Radius.circular(20.r),
-                  bottomRight: Radius.circular(20.r),
-                ),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    "Mohammed Elachyry",
-                    style: Theme.of(context).textTheme.titleLarge,
+                    ],
                   ),
-                  const Text(
-                    "melachyr@student.1337.ma",
-                  ),
-                   SizedBox(height: 10.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                SizedBox(height: 20.w),
+                profileCardItemBuilder(
+                  context,
+                  child: Column(
                     children: [
-                      outlineButtonBuilder(
+                      profileItemBuilder(context,
+                          title: "Language", icon: Icons.translate, trailing:
+                              GetBuilder<LocalizationController>(
+                                  builder: (ctrl) {
+                        return Text(
+                            ctrl.languages[ctrl.selectedIndex].languageName);
+                      })),
+                      profileItemBuilder(
                         context,
-                        title: "Badge",
-                        icon: Icons.qr_code_rounded,
+                        title: "Dark mode",
+                        icon: Icons.dark_mode,
+                        trailing: Switch.adaptive(
+                          value: false,
+                          onChanged: (value) {},
+                        ),
                       ),
-                      const SizedBox(width: 10),
-                      outlineButtonBuilder(
+                      profileItemBuilder(
                         context,
-                        title: "Edit",
-                        icon: Icons.edit,
+                        title: "Notifications",
+                        icon: Icons.notifications,
                       ),
                     ],
-                  )
-                ],
-              ),
-            ),
-            SizedBox(height: 20.w),
-            profileCardItemBuilder(
-              context,
-              child: Column(
-                children: [
-                  profileItemBuilder(
-                    context,
-                    title: "Personal Information",
-                    icon: Icons.person,
                   ),
-                  profileItemBuilder(
-                    context,
-                    title: "Change Password",
-                    icon: Icons.password,
+                ),
+                SizedBox(height: 20.w),
+                profileCardItemBuilder(
+                  context,
+                  child: Column(
+                    children: [
+                      profileItemBuilder(
+                        context,
+                        title: "About us",
+                        icon: Icons.question_mark,
+                      ),
+                      profileItemBuilder(
+                        context,
+                        title: "Contact us",
+                        icon: Icons.email,
+                      ),
+                      profileItemBuilder(
+                        context,
+                        title: "Privacy Policy",
+                        icon: Icons.lock,
+                      ),
+                      profileItemBuilder(
+                        context,
+                        title: "Terms & Conditions",
+                        icon: Icons.list,
+                      ),
+                    ],
                   ),
-                  profileItemBuilder(
+                ),
+                SizedBox(height: 20.w),
+                profileCardItemBuilder(
+                  context,
+                  child: profileItemBuilder(
                     context,
-                    title: "Fingerprint Scan",
-                    icon: Icons.fingerprint,
-                    trailing: Switch.adaptive(
-                      value: false,
-                      onChanged: (value) {},
-                    ),
+                    title: "Delete your account",
+                    icon: Icons.delete_forever_rounded,
+                    color: Colors.red,
                   ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20.w),
-            profileCardItemBuilder(
-              context,
-              child: Column(
-                children: [
-                  profileItemBuilder(
+                ),
+                SizedBox(height: 20.w),
+                profileCardItemBuilder(
+                  context,
+                  child: profileItemBuilder(
                     context,
-                    title: "Language",
-                    icon: Icons.translate,
-                    trailing: GetBuilder<LocalizationController>(
-                      builder: (ctrl) {
-                        return Text(ctrl.languages[ctrl.selectedIndex].languageName);
-                      }
-                    )
+                    title: "Log out",
+                    icon: Icons.logout,
+                    onTap: () {
+                      AuthController.instance.signOut();
+                    },
                   ),
-                  profileItemBuilder(
-                    context,
-                    title: "Dark mode",
-                    icon: Icons.dark_mode,
-                    trailing: Switch.adaptive(
-                      value: false,
-                      onChanged: (value) {},
-                    ),
-                  ),
-                  profileItemBuilder(
-                    context,
-                    title: "Notifications",
-                    icon: Icons.notifications,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20.w),
-            profileCardItemBuilder(
-              context,
-              child: Column(
-                children: [
-                  profileItemBuilder(
-                    context,
-                    title: "About us",
-                    icon: Icons.question_mark,
-                  ),
-                  profileItemBuilder(
-                    context,
-                    title: "Contact us",
-                    icon: Icons.email,
-                  ),
-                  profileItemBuilder(
-                    context,
-                    title: "Privacy Policy",
-                    icon: Icons.lock,
-                  ),
-                  profileItemBuilder(
-                    context,
-                    title: "Terms & Conditions",
-                    icon: Icons.list,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20.w),
-            profileCardItemBuilder(
-              context,
-              child: profileItemBuilder(
-                context,
-                title: "Delete your account",
-                icon: Icons.delete_forever_rounded,
-                color: Colors.red,
-              ),
-            ),
-            SizedBox(height: 20.w),
-            profileCardItemBuilder(
-              context,
-              child: profileItemBuilder(
-                context,
-                title: "Log out",
-                icon: Icons.logout,
-                onTap: () {
-                  AuthController.instance.signOut();
-                },
-              ),
-            )
-          ],
-        ),
+                )
+              ],
+            );
+          } 
+        }),
       ),
     );
   }
@@ -246,7 +264,7 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
         padding: MaterialStateProperty.all(
-            EdgeInsets.symmetric(horizontal: 20.w, vertical: 7.h),
+          EdgeInsets.symmetric(horizontal: 20.w, vertical: 7.h),
         ),
       ),
     );
@@ -263,24 +281,25 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  ListTile profileItemBuilder(BuildContext context,
-      {required String title,
-      required IconData icon,
-      Color? color,
-      Widget? trailing,
-      Function()? onTap,}) {
+  ListTile profileItemBuilder(
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    Color? color,
+    Widget? trailing,
+    Function()? onTap,
+  }) {
     return ListTile(
-      leading: Icon(
-        icon,
-        color: color ?? Theme.of(context).colorScheme.primary,
-      ),
-      title: Text(title),
-      trailing: trailing,
-      onTap: onTap,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.r),
-      )
-    );
+        leading: Icon(
+          icon,
+          color: color ?? Theme.of(context).colorScheme.primary,
+        ),
+        title: Text(title),
+        trailing: trailing,
+        onTap: onTap,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ));
   }
 }
 

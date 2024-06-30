@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../controllers/controllers.dart';
+import '../../models/models.dart';
 import '../../utils/utils.dart';
 import '../screens.dart';
 
@@ -21,6 +22,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final AuthController authController = Get.find();
   final screenWidth = Get.width;
+  List<String>? selectedInterests;
+
+  @override
+  void initState() {
+    super.initState();
+    if (Get.arguments != null && Get.arguments is Map) {
+      final args = Get.arguments as Map<String, dynamic>;
+      selectedInterests = args['interests'] ?? [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     AppBar appBar = AppBar(
@@ -37,12 +49,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: Obx(
           () {
             if (AuthController.instance.isLoading.value) {
-              return Expanded(
-                child: Center(
-                  child: LoadingAnimationWidget.staggeredDotsWave(
-                    color: Theme.of(context).primaryColor,
-                    size: screenWidth >= 600 ? 90 : 60,
-                  ),
+              return Center(
+                child: LoadingAnimationWidget.staggeredDotsWave(
+                  color: Theme.of(context).primaryColor,
+                  size: screenWidth >= 600 ? 90 : 60,
                 ),
               );
             } else {
@@ -54,7 +64,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Column(
                     children: [
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 15.w, vertical: 15.h),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.r),
                           color: Theme.of(context).colorScheme.background,
@@ -128,11 +139,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             PrimaryButton(
                               onTap: () {
                                 if (_formKey.currentState!.validate()) {
-                                authController.register(
+                                  // print("interestsssssssssssss444: $selectedInterests");
+                                  int i = 0;
+                                  List<Interest> interests = selectedInterests!
+                                      .map((e) => Interest(
+                                            id: (i++).toString(),
+                                            name: e,
+                                          ))
+                                      .toList();
+                                  authController.register(
                                     _nameController.text,
                                     _emailController.text,
-                                    _passwordController.text);
-                              }
+                                    _passwordController.text,
+                                    interests,
+                                  );
+                                }
                               },
                               text: 'Sign up',
                             ),
@@ -150,16 +171,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   color: Theme.of(context).colorScheme.primary,
                                 ),
                               ),
-                              child:  Text(
+                              child: Text(
                                 "Sign in",
-                                 style: Theme.of(context).textTheme.titleMedium,
+                                style: Theme.of(context).textTheme.titleMedium,
                               ),
                             ),
                           ],
                         ),
                       ),
                       SizedBox(height: 20.h),
-                          const AgreeTermsTextCard(),
+                      const AgreeTermsTextCard(),
                     ],
                   ),
                 ),
