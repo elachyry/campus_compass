@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../utils/utils.dart';
@@ -15,6 +16,7 @@ class OnBoardingScreen extends StatefulWidget {
 
 class _OnBoardingScreenState extends State<OnBoardingScreen> {
   PageController pageController = PageController(initialPage: 0);
+  final getStorage = GetStorage();
   int currentIndex = 0;
 
   @override
@@ -46,7 +48,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     return Column(
                       children: [
                         Container(
-                          margin:  EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
+                          margin: EdgeInsets.symmetric(
+                              horizontal: 15.w, vertical: 20.h),
                           width: Get.width,
                           height: Get.height / 2.5,
                           child: CustomAnimatedWidget(
@@ -57,7 +60,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                         ),
                         SizedBox(height: 20.h),
                         Padding(
-                          padding:  EdgeInsets.symmetric(horizontal: 20.w),
+                          padding: EdgeInsets.symmetric(horizontal: 20.w),
                           child: CustomAnimatedWidget(
                             index: index,
                             delay: 300,
@@ -74,7 +77,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                         SizedBox(height: 20.h),
                         Expanded(
                           child: Padding(
-                            padding:   EdgeInsets.symmetric(horizontal: 30.w),
+                            padding: EdgeInsets.symmetric(horizontal: 30.w),
                             child: CustomAnimatedWidget(
                               index: index,
                               delay: 500,
@@ -119,13 +122,15 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     const Spacer(),
                     currentIndex == 3
                         ? Padding(
-                            padding:   EdgeInsets.symmetric(horizontal: 24.w),
+                            padding: EdgeInsets.symmetric(horizontal: 24.w),
                             child: Column(
                               children: [
                                 FadeInDown(
                                   delay: const Duration(milliseconds: 200),
                                   child: PrimaryButton(
                                     onTap: () {
+                                      getStorage.write('first use', false);
+
                                       Get.offNamed(Routes.interestsSelection);
                                     },
                                     text: 'Get Started',
@@ -136,13 +141,16 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                                   delay: const Duration(milliseconds: 200),
                                   child: OutlinedButton(
                                     onPressed: () {
+                                      getStorage.write('first use', false);
+
                                       Get.toNamed(Routes.signin);
                                     },
                                     style: OutlinedButton.styleFrom(
                                       fixedSize:
                                           const Size(double.maxFinite, 53),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20.r),
+                                        borderRadius:
+                                            BorderRadius.circular(20.r),
                                       ),
                                       side: BorderSide(
                                         color: Theme.of(context)
@@ -167,7 +175,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             ),
                           )
                         : Padding(
-                            padding:   EdgeInsets.symmetric(horizontal: 24.w),
+                            padding: EdgeInsets.symmetric(horizontal: 24.w),
                             child: PrimaryButton(
                               onTap: () {
                                 setState(() {

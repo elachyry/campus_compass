@@ -55,7 +55,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                                 alignment: Alignment.bottomCenter,
                                 child: CircleAvatar(
                                 backgroundImage: const AssetImage(
-                                  "assets/images/logo/fav.png",
+                                  "assets/images/logo/logo.png",
                                 ),
                                 radius: 50.r,
                                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,

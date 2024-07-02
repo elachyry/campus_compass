@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:compus_map/controllers/controllers.dart';
+import 'package:compus_map/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:quickalert/quickalert.dart';
 
 import '../../models/models.dart';
 
@@ -66,9 +68,11 @@ class ProfileScreen extends StatelessWidget {
                               children: [
                                 CircleAvatar(
                                   radius: 48.r,
-                                  backgroundImage: NetworkImage(
-                                    user.imageUrl,
-                                  ),
+                                  backgroundImage: user.imageUrl.isEmpty
+                                      ? const AssetImage(
+                                          'assets/images/logo/avatar.png')
+                                      : NetworkImage(user.imageUrl)
+                                          as ImageProvider,
                                 ),
                                 const Positioned(
                                   bottom: 5,
@@ -162,13 +166,16 @@ class ProfileScreen extends StatelessWidget {
                   context,
                   child: Column(
                     children: [
-                      profileItemBuilder(context,
-                          title: "Language", icon: Icons.translate, trailing:
-                              GetBuilder<LocalizationController>(
-                                  builder: (ctrl) {
-                        return Text(
-                            ctrl.languages[ctrl.selectedIndex].languageName);
-                      })),
+                      profileItemBuilder(
+                        context,
+                        title: "Language",
+                        icon: Icons.translate,
+                        trailing:
+                            GetBuilder<LocalizationController>(builder: (ctrl) {
+                          return Text(
+                              ctrl.languages[ctrl.selectedIndex].languageName);
+                        }),
+                      ),
                       profileItemBuilder(
                         context,
                         title: "Dark mode",
@@ -232,7 +239,28 @@ class ProfileScreen extends StatelessWidget {
                     title: "Log out",
                     icon: Icons.logout,
                     onTap: () {
-                      AuthController.instance.signOut();
+                      // Tools.confirmationDialog("Do you want to log out?", ImageConstants.logo, () { }, Theme.of(context).scaffoldBackgroundColor,);
+
+                      QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.confirm,
+                        text: 'Do you want to logout',
+                        confirmBtnText: 'Yes',
+                        cancelBtnText: 'No',
+                        borderRadius: 20.r,
+                        confirmBtnTextStyle: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontWeight: FontWeight.bold),
+                        cancelBtnTextStyle: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(fontWeight: FontWeight.bold),
+                        onConfirmBtnTap: () =>
+                            AuthController.instance.signOut(),
+                      );
                     },
                   ),
                 )
@@ -270,8 +298,10 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Container profileCardItemBuilder(BuildContext context,
-      {required Widget child}) {
+  Container profileCardItemBuilder(
+    BuildContext context, {
+    required Widget child,
+  }) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.r),

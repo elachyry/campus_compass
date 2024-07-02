@@ -149,7 +149,7 @@ class _GetOtherInfosScreenState extends State<GetOtherInfosScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          "Thank you Mohammed for join UniConnect",
+                          "Thank you ${authController.currentUser.value!.name.split(" ")[0]} for join UniConnect",
                           style: Theme.of(context)
                               .textTheme
                               .headlineSmall!
@@ -179,6 +179,7 @@ class _GetOtherInfosScreenState extends State<GetOtherInfosScreen> {
                               SizedBox(height: 30.h),
                               TextFormField(
                                 readOnly: true,
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
                                 onTap: () => _selectDate(context),
                                 controller: _dateController,
                                 decoration: InputDecoration(
@@ -366,6 +367,7 @@ class _GetOtherInfosScreenState extends State<GetOtherInfosScreen> {
   }) {
     return DropdownButtonFormField2<String>(
       isExpanded: true,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
         filled: true,
         contentPadding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 0),
@@ -451,14 +453,14 @@ class _GetOtherInfosScreenState extends State<GetOtherInfosScreen> {
                   title: 'Take a picture'.tr,
                   icon: Bootstrap.camera,
                   onTap: () {
-                    _pickImage(ImageSource.camera);
+                    _pickImage(ImageSource.camera).then((value) => Get.back());
                   },
                 ),
                 ImageModalSheetItem(
                   title: 'Select from gallery'.tr,
                   icon: Bootstrap.image,
                   onTap: () {
-                    _pickImage(ImageSource.gallery);
+                    _pickImage(ImageSource.gallery).then((value) => Get.back());
                   },
                 ),
               ],

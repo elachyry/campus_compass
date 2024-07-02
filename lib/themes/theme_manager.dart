@@ -13,7 +13,7 @@ class ThemeManager extends GetxController {
       primaryColor: const Color(0xFF184C92),
       fontFamily: controller.selectedIndex == 1 ? 'ElMessiri' : 'Signika',
       cardColor: const Color(0xFFf8f8f8),
-      scaffoldBackgroundColor: const Color(0xFFf8f8f8),
+      scaffoldBackgroundColor: const Color.fromARGB(255, 237, 235, 235),
       appBarTheme: const AppBarTheme().copyWith(
         backgroundColor: const Color(0xFFfcfcfe),
       ),
@@ -42,6 +42,7 @@ class ThemeManager extends GetxController {
         titleSmall: GoogleFonts.poppins(fontSize: 14.sp),
         bodyMedium: GoogleFonts.poppins(fontSize: 14.sp),
         headlineSmall: GoogleFonts.poppins(fontSize: 24.sp),
+        headlineMedium: GoogleFonts.poppins(fontSize: 34.sp),
       ),
     );
 

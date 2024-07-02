@@ -1,10 +1,12 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../controllers/controllers.dart';
@@ -16,14 +18,24 @@ class DashboardScreen extends StatefulWidget {
     super.key,
     required this.pageController,
   });
-  
+
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  // final focuseNode = FocusNode();
+  final EventController eventController = Get.find();
+  final ClubController clubController = Get.find();
   final AuthController authController = Get.find();
+
+  @override
+  void initState() {
+    super.initState();
+    eventController.fetchEventsLocal();
+    // clubController.fetchClubsLocal();
+  }
+
+  // final focuseNode = FocusNode();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,122 +52,67 @@ class _DashboardScreenState extends State<DashboardScreen> {
           } else {
             final User? user = authController.currentUser.value;
             return ListView(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+              padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 25.h),
               children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                        borderRadius: BorderRadius.circular(50.r),
-                        onTap: () {
-                          setState(() {
-                            widget.pageController.jumpTo(3);
-                          });
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(50.r),
-                          child: Image.network(
-                            user!.imageUrl,
-                            width: 50.w,
-                            height: 50.h,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.notifications,
-                          color: Theme.of(context).colorScheme.primary,
-                          size: 28,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 15.h),
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20.r),
-                    color: Theme.of(context).colorScheme.background,
-                  ),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Column(
+                Row(
+                  children: [
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Hello ${user.name.split(" ")[0]}",
-                          style: const TextStyle(
-                            color: Colors.black54,
-                          ),
+                          'Hey!',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium!
+                              .copyWith(
+                                color:
+                                    Theme.of(context).colorScheme.onBackground,
+                              ),
                         ),
-                        SizedBox(height: 3.h),
-                        FittedBox(
-                          child: Text(
-                            "Discoverd the best events for you",
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall!
-                                .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
+                        Text(
+                          user!.name.split(" ")[0],
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium!
+                              .copyWith(
+                                color:
+                                    Theme.of(context).colorScheme.onBackground,
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                       ],
                     ),
-                  ),
-                ),
-
-                SizedBox(height: 20.h),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        // focusNode: focuseNode,
-                        onTap: () {
-                          // focuseNode.unfocus();
-                        },
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(
-                            Bootstrap.search,
-                            // size: 35,
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
-                          hintText: 'Search for events...'.tr,
-                          // hintStyle: const TextStyle(fontSize: 13),
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 50.w, vertical: 16.h),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20.r),
-                            borderSide: const BorderSide(
-                              color: Colors.white,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20.r),
-                            borderSide: const BorderSide(color: Colors.white),
-                          ),
-                        ),
-                        onChanged: (value) {},
+                    const Spacer(),
+                    CircleAvatar(
+                      radius: 32.r,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      child: CircleAvatar(
+                        radius: 30.r,
+                        backgroundImage: user.imageUrl.isEmpty
+                            ? const AssetImage(
+                                'assets/images/logo/avatar.png',
+                              )
+                            : NetworkImage(
+                                user.imageUrl,
+                              ) as ImageProvider,
                       ),
                     ),
-                    SizedBox(width: 15.w),
-                    SizedBox(
-                      width: 50.w,
-                      height: 50.h,
-                      child: Icon(
-                        Icons.tune,
-                        size: 32,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    )
                   ],
+                ),
+                SizedBox(height: 20.h),
+                SizedBox(
+                  height: 80.h,
+                  child: Swiper(
+                    autoplay: true,
+                    autoplayDelay: 5000,
+                    autoplayDisableOnInteraction: true,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ServiceCard();
+                    },
+                    itemCount: 3,
+                    // pagination: const SwiperPagination(),
+                  ),
+                  
                 ),
                 SizedBox(height: 10.h),
                 Row(
@@ -181,105 +138,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 SizedBox(height: 10.h),
                 SizedBox(
                   width: double.infinity,
-                  height: 350.h,
-                  child: Swiper(
-                    itemBuilder: (BuildContext context, int index) {
-                      return const EventCard(
-                          image: "assets/images/logo/event1.jpg");
-                    },
-                    itemCount: 10,
-                    pagination: const SwiperPagination(),
-                    // control: const SwiperControl(),
-                  ),
-                ),
-
-                SizedBox(height: 10.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Our Services",
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        "View All",
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10.h),
-                SizedBox(
-                  height: 400.h,
-                  child: Swiper(
-                    itemBuilder: (BuildContext context, int index) {
-                      return Card(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        elevation: 0.5,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.r),
-                        ),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 14.w, vertical: 14.h),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.r),
-                          ),
-                          child: Column(
-                            children: [
-                              Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.r),
-                                ),
-                                elevation: 5,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20.r),
-                                  child: SizedBox(
-                                    height: 200.h,
-                                    width: double.infinity,
-                                    child: Image.asset(
-                                      "assets/images/logo/service1.jpg",
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 15.h),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Request a Golf Cart",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleLarge!
-                                        .copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                  ),
-                                  SizedBox(height: 5.h),
-                                  const Text(
-                                    'Get around campus effortlessly! Request a golf cart for quick and convenient transportation to your destination. Easy, reliable, and just a tap away!',
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 4,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                    itemCount: 10,
-                    pagination: const SwiperPagination(),
-                    // control: const SwiperControl(),
-                  ),
+                  height: 250.h,
+                  child: Obx(() {
+                    if (eventController.events.isEmpty) {
+                      return const Center(
+                          child: Text(
+                        "No events found",
+                      ));
+                    }
+                    return Swiper(
+                      itemBuilder: (BuildContext context, int index) {
+                        return EventCard(
+                          event: eventController.events[index],
+                        );
+                      },
+                      itemCount: eventController.events.length,
+                      pagination: const SwiperPagination(),
+                      // control: const SwiperControl(),
+                    );
+                  }),
                 ),
                 SizedBox(height: 10.h),
                 Row(
@@ -306,19 +183,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 SizedBox(
                   width: double.infinity,
                   height: 350.h,
-                  child: Swiper(
-                    itemBuilder: (BuildContext context, int index) {
-                      return const EventCard(
-                          image: "assets/images/logo/club1.jpg");
-                    },
-                    itemCount: 10,
-                    pagination: const SwiperPagination(),
-                    // control: const SwiperControl(),
-                  ),
+                  child: Obx(() {
+                    if (eventController.events.isEmpty) {
+                      return const Center(
+                          child: Text(
+                        "No clubs found",
+                      ));
+                    }
+                    return Swiper(
+                      itemBuilder: (BuildContext context, int index) {
+                        return ClubCard(
+                          club: clubController.clubs[index],
+                        );
+                      },
+                      itemCount: clubController.clubs.length,
+                      pagination: const SwiperPagination(),
+                      // control: const SwiperControl(),
+                    );
+                  }),
                 ),
-                // const EventCard(
-                //   image: "assets/images/logo/club1.jpg",
-                // ),
               ],
             );
           }
@@ -328,10 +211,182 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 }
 
+class ServiceCard extends StatelessWidget {
+  const ServiceCard({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 80.h,
+      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20.r),
+        color: Theme.of(context).colorScheme.primary,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircleAvatar(
+            radius: 25.r,
+            backgroundColor: Colors.white,
+            child: Icon(
+              BoxIcons.bx_car,
+              color: Theme.of(context).colorScheme.primary,
+              size: 30,
+            ),
+          ),
+          SizedBox(width: 15.w),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Request a Ride",
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+              ),
+              Text(
+                "Book a ride to your destination",
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      color: Colors.white70,
+                      fontSize: 12.sp,
+                    ),
+              ),
+            ],
+          ),
+          SizedBox(width: 15.w),
+          Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.white,
+            size: 30.w,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class EventCard extends StatelessWidget {
-  final String image;
+  final Event event;
   const EventCard({
-    required this.image,
+    required this.event,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.r),
+            image: DecorationImage(
+              image: NetworkImage(
+                event.imageUrl,
+              ),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20.r),
+              color: Colors.white,
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+            margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 30.h),
+            width: double.infinity,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      event.title,
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    SizedBox(height: 5.h),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Bootstrap.clock,
+                              size: 16.h,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            SizedBox(width: 5.w),
+                            Text(
+                              DateFormat('dd-MM-yyyy HH:mm').format(event.date),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall!
+                                  .copyWith(
+                                    color: Colors.black54,
+                                    fontSize: 12,
+                                  ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(width: 10.w),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Bootstrap.geo_alt,
+                                  size: 16.h,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                                SizedBox(width: 5.w),
+                                Text(
+                                  event.location,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleSmall!
+                                      .copyWith(
+                                        color: Colors.black54,
+                                        fontSize: 12,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 30.w,
+                ),
+              ],
+            ),
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class ClubCard extends StatelessWidget {
+  final Club club;
+  const ClubCard({
+    required this.club,
     super.key,
   });
 
@@ -362,44 +417,13 @@ class EventCard extends StatelessWidget {
                     child: SizedBox(
                       height: 200.h,
                       width: double.infinity,
-                      child: Image.asset(
-                        image,
+                      child: Image.network(
+                        club.logoUrl,
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
                 ),
-                Positioned(
-                  right: 8,
-                  top: 8,
-                  child: Container(
-                    width: 45.w,
-                    height: 45.h,
-                    decoration: BoxDecoration(
-                      color: Colors.black12,
-                      borderRadius: BorderRadius.circular(50.r),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "30th",
-                          style: TextStyle(
-                            fontSize: 13.sp,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Text(
-                          "Jul",
-                          style: TextStyle(
-                            fontSize: 10.sp,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
               ],
             ),
             SizedBox(height: 15.h),
@@ -411,7 +435,7 @@ class EventCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Xbition 2023",
+                      club.name,
                       style: Theme.of(context).textTheme.titleLarge!.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
@@ -426,7 +450,7 @@ class EventCard extends StatelessWidget {
                         ),
                         SizedBox(width: 3.w),
                         Text(
-                          "UM6P Benguerir",
+                          club.location,
                           style: TextStyle(
                             color: Colors.black26,
                             fontSize: 12.sp,
@@ -444,7 +468,7 @@ class EventCard extends StatelessWidget {
                         ),
                         SizedBox(width: 3.w),
                         Text(
-                          "07:00 PM",
+                          club.description,
                           style: TextStyle(
                             color: Colors.black26,
                             fontSize: 12.sp,
@@ -454,19 +478,19 @@ class EventCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                Column(
-                  children: [
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 6.w, vertical: 6.h),
-                      child: Icon(
-                        Icons.favorite_border,
-                        size: 30,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                  ],
-                )
+                // Column(
+                //   children: [
+                //     Container(
+                //       padding:
+                //           EdgeInsets.symmetric(horizontal: 6.w, vertical: 6.h),
+                //       child: Icon(
+                //         Icons.favorite_border,
+                //         size: 30,
+                //         color: Theme.of(context).colorScheme.primary,
+                //       ),
+                //     ),
+                //   ],
+                // )
               ],
             ),
           ],

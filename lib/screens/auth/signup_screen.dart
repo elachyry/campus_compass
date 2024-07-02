@@ -20,6 +20,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _rePasswordController = TextEditingController();
   final AuthController authController = Get.find();
   final screenWidth = Get.width;
   List<String>? selectedInterests;
@@ -35,16 +36,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    AppBar appBar = AppBar(
-      backgroundColor: AppColors.kWhite,
-      elevation: 0,
-      leading: BackButton(
-        color: Theme.of(context).colorScheme.primary,
-      ),
-    );
+    // AppBar appBar = AppBar(
+    //   backgroundColor: AppColors.kWhite,
+    //   elevation: 0,
+    //   leading: BackButton(
+    //     color: Theme.of(context).colorScheme.primary,
+    //   ),
+    // );
     return Scaffold(
       backgroundColor: AppColors.kWhite,
-      appBar: appBar,
+      // appBar: appBar,
       body: SafeArea(
         child: Obx(
           () {
@@ -74,7 +75,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           children: [
                             CircleAvatar(
                               backgroundImage: const AssetImage(
-                                "assets/images/logo/fav.png",
+                                "assets/images/logo/logo.png",
                               ),
                               radius: 50.r,
                               backgroundColor: Colors.white,
@@ -86,8 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             SizedBox(height: 20.h),
                             AuthField(
-                              title: "Full Name",
-                              hintText: "Full Name",
+                              title: "Full Name*",
                               controller: _nameController,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -103,8 +103,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             SizedBox(height: 20.h),
                             AuthField(
-                              title: "Email",
-                              hintText: "Email",
+                              title: "Email*",
                               controller: _emailController,
                               maxLines: 1,
                               keyboardType: TextInputType.emailAddress,
@@ -121,8 +120,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                             SizedBox(height: 20.h),
                             AuthField(
-                              title: "Password",
-                              hintText: "Password",
+                              title: "Password*",
                               controller: _passwordController,
                               isPassword: true,
                               textInputAction: TextInputAction.done,
@@ -132,6 +130,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 } else if (value.length < 8) {
                                   return 'Password should be at least 8 characters long';
                                 }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 20.h),
+                            AuthField(
+                              title: "Confirm Password*",
+                              controller: _rePasswordController,
+                              isPassword: true,
+                              textInputAction: TextInputAction.done,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Password is required';
+                                } else if (value != _passwordController.text) {
+                                  return 'Passwords do not match';
+                                }
+                               
                                 return null;
                               },
                             ),

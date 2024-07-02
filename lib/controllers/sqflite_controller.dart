@@ -44,6 +44,26 @@ class SqfliteController extends GetxController {
       department TEXT
       )
 ''');
+    await db.execute('''
+    CREATE TABLE event (
+      id TEXT PRIMARY KEY,
+      title TEXT,
+      description TEXT,
+      date TEXT,
+      location INTEGER,
+      imageUrl TEXT
+      )
+''');
+
+    await db.execute('''
+    CREATE TABLE club (
+      id TEXT PRIMARY KEY,
+      title TEXT,
+      description TEXT,
+      location TEXT,
+      logoUrl TEXT,
+      coverUrl TEXT
+      )''');
   }
 
   _onUpgrade(Database db, int oldVersion, int newVersion) {}
@@ -72,8 +92,9 @@ class SqfliteController extends GetxController {
     return response;
   }
 
-Future<void> insertUserData(User user) async {
-    String interestsJson = jsonEncode(user.interests); // Convert List<String> to JSON string
+  Future<void> insertUserData(User user) async {
+    String interestsJson =
+        jsonEncode(user.interests); // Convert List<String> to JSON string
 
     // Escape single quotes in JSON string for SQLite
     interestsJson = interestsJson.replaceAll("'", "''");
@@ -87,13 +108,13 @@ Future<void> insertUserData(User user) async {
     await insertData(query);
   }
 
-Future<int> updatetUserData(User user) async {
-  String interestsJson = jsonEncode(user.interests);
+  Future<int> updatetUserData(User user) async {
+    String interestsJson = jsonEncode(user.interests);
 
-  // Escape single quotes in JSON string for SQLite
-  interestsJson = interestsJson.replaceAll("'", "''");
+    // Escape single quotes in JSON string for SQLite
+    interestsJson = interestsJson.replaceAll("'", "''");
 
-  String query = '''
+    String query = '''
     UPDATE user SET 
       isCompleted = ${user.isCompleted ? 1 : 0}, 
       phoneNumber = "${user.phoneNumber}", 
@@ -106,8 +127,8 @@ Future<int> updatetUserData(User user) async {
     WHERE id = "${user.id}"
   ''';
 
-  return await updateData(query);
-}
+    return await updateData(query);
+  }
 
   Future<User?> getUserData(String uid) async {
     List<Map<String, dynamic>> result =
@@ -134,5 +155,39 @@ Future<int> updatetUserData(User user) async {
       );
     }
     return null;
+  }
+
+  Future<void> insertEventIfNotExists(Event event) async {
+    List<Map<String, dynamic>> result = await readData('SELECT * FROM event WHERE id = "${event.id}"');
+    if (result.isEmpty) {
+      String query = '''
+        INSERT INTO event ("id", "title", "description", "date", "location", "imageUrl") 
+        VALUES ("${event.id}", "${event.title}", "${event.description}", "${event.date.toIso8601String()}", "${event.location}", "${event.imageUrl}")
+      ''';
+      await insertData(query);
+    }
+  }
+
+  Future<List<Event>> getEvents() async {
+    List<Map<String, dynamic>> result =
+        await readData('SELECT * FROM event');
+    return result.map((event) => Event.fromJson(event)).toList();
+  }
+
+   Future<void> insertClubIfNotExists(Club club) async {
+    List<Map<String, dynamic>> result = await readData('SELECT * FROM club WHERE id = "${club.id}"');
+    if (result.isEmpty) {
+      String query = '''
+        INSERT INTO club ("id", "title", "description", "location", "logoUrl", "coverUrl") VALUES 
+        ("${club.id}", "${club.name}", "${club.description}", "${club.location}", "${club.logoUrl}", "${club.coverUrl}")
+      ''';
+      await insertData(query);
+    }
+  }
+
+  Future<List<Club>> getClubs() async {
+    List<Map<String, dynamic>> result =
+        await readData('SELECT * FROM club');
+    return result.map((club) => Club.fromJson(club)).toList();
   }
 }

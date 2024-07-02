@@ -5,8 +5,9 @@ import 'package:compus_map/controllers/sqflite_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:get_storage/get_storage.dart';
 
 import '../exceptions/signin_with_email_and_password_exception.dart';
 import '../exceptions/signup_with_email_and_password_exception.dart';
@@ -16,6 +17,7 @@ import '../../models/user.dart' as user;
 import 'controllers.dart';
 
 class AuthController extends GetxController {
+  final getStorage = GetStorage();
   static AuthController instance = Get.find();
   FirebaseAuth auth = FirebaseAuth.instance;
   final firestore = FirebaseFirestore.instance;
@@ -35,9 +37,17 @@ class AuthController extends GetxController {
 
   void _setInitialScreen(User? user) async {
     if (user == null) {
-      Get.offAllNamed(Routes.language);
+       bool isFirstTime = getStorage.read('first use') ?? true;
+      if (isFirstTime)
+      {
+         Get.offAllNamed(Routes.language);
+      }
+      else
+      {
+         Get.offAllNamed(Routes.signin);
+      }
     } else {
-      await _retrieveUserData(user.uid);
+      await _retrieveUserData(user.uid).then((value) => FlutterNativeSplash.remove());
       if (currentUser.value == null) {
         Get.offAllNamed(Routes.otherInfos);
       } else if (!currentUser.value!.isCompleted) {
@@ -53,7 +63,9 @@ class AuthController extends GetxController {
     // print("currentUser data: ${currentUser.value!.toJson()}");
     // if (currentUser.value == null) {
     // Fetch from Firestore if not found in local database
-    currentUser.value = await getUserData(uid);
+    currentUser.value ??= await getUserData(uid);
+    
+
     // if (currentUser.value != null) {
     //   await sqfliteController.insertUserData(currentUser.value!);
     // }
@@ -141,7 +153,7 @@ class AuthController extends GetxController {
       String downloadUrl = await taskSnapshot.ref.getDownloadURL();
       return downloadUrl;
     } catch (e) {
-      print('Error uploading image: $e');
+      // print('Error uploading image: $e');
       return null;
     }
   }

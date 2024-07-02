@@ -25,7 +25,6 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: AppColors.kWhite,
       body: SafeArea(
         child: Obx(
           () {
@@ -39,105 +38,140 @@ class _SignInScreenState extends State<SignInScreen> {
             } else {
               return SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.only(
-                    left: 15, right: 15, bottom: 20, top: Get.height * 0.1),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 15.w, vertical: 15.h),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20.r),
-                          color: Theme.of(context).colorScheme.background,
-                        ),
-                        child: Column(
-                          children: [
-                            CircleAvatar(
-                              backgroundImage: const AssetImage(
-                                "assets/images/logo/fav.png",
-                              ),
-                              radius: 50.r,
-                              backgroundColor: Colors.white,
-                            ),
-                            SizedBox(height: 20.h),
-                            FittedBox(
-                              child: Text(
-                                "Let's Sign you in",
-                                style: Theme.of(context).textTheme.headlineSmall,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            SizedBox(height: 25.h),
-                            AuthField(
-                              title: "Email",
-                              hintText: "Email",
-                              controller: _emailController,
-                              maxLines: 1,
-                              keyboardType: TextInputType.emailAddress,
-                              textInputAction: TextInputAction.next,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Email is required';
-                                } else if (!value.contains('@') ||
-                                    !value.contains('.')) {
-                                  return 'Invalid email address';
-                                }
-                                return null;
-                              },
-                            ),
-                            SizedBox(height: 20.h),
-                            AuthField(
-                              title: "Password",
-                              hintText: "Password",
-                              controller: _passwordController,
-                              isPassword: true,
-                              textInputAction: TextInputAction.done,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Password is required';
-                                } else if (value.length < 8) {
-                                  return 'Password should be at least 8 characters long';
-                                }
-                                return null;
-                              },
-                            ),
-                            SizedBox(height: 20.h),
-                            PrimaryButton(
-                              onTap: () {
-                                if (_formKey.currentState!.validate()) {
-                                  authController.login(_emailController.text,
-                                      _passwordController.text);
-                                }
-                              },
-                              text: 'Sign In',
-                            ),
-                            SizedBox(height: 20.h),
-                            OutlinedButton(
-                              onPressed: () {
-                                Get.toNamed(Routes.signup);
-                              },
-                              style: OutlinedButton.styleFrom(
-                                fixedSize: const Size(double.maxFinite, 53),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.r),
-                                ),
-                                side: BorderSide(
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                              ),
-                              child: Text(
-                                "Sign up",
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                            ),
-                          ],
-                        ),
+                      padding: EdgeInsets.only(
+                        left: 15,
+                        right: 15,
+                        bottom: 20,
+                        top: Get.height * 0.1,
                       ),
-                    ],
-                  ),
+                child: Column(
+                  children: [
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 15.w, vertical: 15.h),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20.r),
+                              color: Theme.of(context).colorScheme.background,
+                            ),
+                            child: Column(
+                              children: [
+                                CircleAvatar(
+                                  backgroundImage: const AssetImage(
+                                    "assets/images/logo/logo.png",
+                                  ),
+                                  radius: 50.r,
+                                  backgroundColor: Colors.white,
+                                ),
+                                SizedBox(height: 20.h),
+                                FittedBox(
+                                  child: Text(
+                                    "Let's Sign you in",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                SizedBox(height: 25.h),
+                                AuthField(
+                                  title: "Email",
+                                  controller: _emailController,
+                                  maxLines: 1,
+                                  keyboardType: TextInputType.emailAddress,
+                                  textInputAction: TextInputAction.next,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Email is required';
+                                    } else if (!value.contains('@') ||
+                                        !value.contains('.')) {
+                                      return 'Invalid email address';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                SizedBox(height: 20.h),
+                                AuthField(
+                                  title: "Password",
+                                  controller: _passwordController,
+                                  isPassword: true,
+                                  isAutoValidate: false,
+                                  textInputAction: TextInputAction.done,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Password is required';
+                                    } else if (value.length < 8) {
+                                      return 'Password should be at least 8 characters long';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                SizedBox(height: 5.h),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    const Spacer(),
+                                    TextButton(
+                                      onPressed: () {},
+                                      child: const Text('Forgot password?'),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 15.h),
+                                PrimaryButton(
+                                  onTap: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      authController.login(
+                                          _emailController.text,
+                                          _passwordController.text);
+                                    }
+                                  },
+                                  text: 'Sign In',
+                                ),
+                                SizedBox(height: 20.h),
+                                OutlinedButton(
+                                  onPressed: () {
+                                    Get.toNamed(Routes.interestsSelection);
+                                  },
+                                  style: OutlinedButton.styleFrom(
+                                    fixedSize:
+                                        const Size(double.maxFinite, 53),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(20.r),
+                                    ),
+                                    side: BorderSide(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "Sign up",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                     Align(
+                     alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding:  EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
+                        child:const Text("UniCennect"),
+                      ),
+                    ),
+                  ],
                 ),
+                
               );
             }
           },
@@ -272,7 +306,6 @@ class _RememberMeCardState extends State<RememberMeCard> {
 
 class AuthField extends StatefulWidget {
   final String title;
-  final String hintText;
   final Color? titleColor;
   final TextEditingController controller;
   final TextInputAction? textInputAction;
@@ -280,9 +313,9 @@ class AuthField extends StatefulWidget {
   final bool isPassword;
   final String? Function(String?)? validator;
   final int? maxLines;
+  final bool isAutoValidate;
   const AuthField({
     required this.title,
-    required this.hintText,
     required this.controller,
     this.validator,
     this.titleColor,
@@ -290,6 +323,7 @@ class AuthField extends StatefulWidget {
     this.textInputAction,
     this.keyboardType,
     this.isPassword = false,
+    this.isAutoValidate = true,
     super.key,
   });
 
@@ -305,7 +339,7 @@ class _AuthFieldState extends State<AuthField> {
       controller: widget.controller,
       validator: widget.validator,
       maxLines: widget.isPassword ? 1 : widget.maxLines,
-
+      autovalidateMode: widget.isAutoValidate ? AutovalidateMode.onUserInteraction : null,
       obscureText: widget.isPassword ? isObscure : false,
       textInputAction: widget.textInputAction,
       keyboardType: widget.keyboardType,
@@ -332,8 +366,7 @@ class _AuthFieldState extends State<AuthField> {
                     isObscure = !isObscure;
                   });
                 },
-                icon: Icon(
-                    isObscure ? Icons.visibility : Icons.visibility_off,
+                icon: Icon(isObscure ? Icons.visibility : Icons.visibility_off,
                     color: const Color(0xFF171725)),
               )
             : null,

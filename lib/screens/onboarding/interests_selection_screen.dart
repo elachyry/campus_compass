@@ -76,18 +76,20 @@ class _InterestsSelectionScreenState extends State<InterestsSelectionScreen> {
                     },
                     textStyles: MultiSelectTextStyles(
                       textStyle: Theme.of(context).textTheme.titleSmall,
-                      selectedTextStyle: Theme.of(context).textTheme.titleSmall,
+                      selectedTextStyle: Theme.of(context).textTheme.titleSmall!.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary,),
+                      
                     ),
                     itemsDecoration: MultiSelectDecorations(
                       selectedDecoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
                         borderRadius: BorderRadius.circular(20.r),
                       ),
                     ),
                     maxSelectableCount: 5,
                     onMaximumSelected: (allSelectedItems, selectedItem) {
                       Fluttertoast.showToast(
-                        msg: "The limit has been reached".tr,
+                        msg: "You can only choose 5 interests".tr,
                       );
                     },
                   ),
@@ -104,7 +106,7 @@ class _InterestsSelectionScreenState extends State<InterestsSelectionScreen> {
                           'interests': selectedInterests,
                         });
                       },
-                text: 'Save',
+                text: 'Continue',
               ),
             ],
           ),
